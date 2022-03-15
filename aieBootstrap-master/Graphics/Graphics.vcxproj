@@ -168,12 +168,16 @@
   <ItemGroup>
     <ClCompile Include="GraphicsApp.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SolarSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GraphicsApp.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Planet.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="SolarSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

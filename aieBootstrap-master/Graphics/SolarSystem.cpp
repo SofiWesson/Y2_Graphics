@@ -13,7 +13,7 @@ SolarSystem::SolarSystem()
 
 	m_mercury = new Planet(
 		glm::vec3(2.5f, 0, 0),
-		glm::vec3(0, 0, 0),
+		glm::vec3(-10, 0, 0),
 		glm::vec4(.5f, .5f, .5f, 1),
 		0.1f,
 		true,

@@ -38,17 +38,12 @@ void Planet::Update(float a_dt)
 	if (m_parent != nullptr)
 	{
 		float dist = glm::distance(m_position, m_parent->GetPosition());
-		float penetration = m_distFromParent + m_radius - dist;
 		
-		if (penetration < 0)
+		if (dist > m_distFromParent)
 		{
-			
+			m_velocity += m_rotation;
 		}
-		
-		glm::vec3 normal = glm::normalize(m_position - m_parent->GetPosition());
-		glm::vec3 impact = (m_velocity - m_parent->m_velocity) * normal;
 
-		m_velocity += -impact;
 		m_position += m_velocity * a_dt;
 	}
 }

@@ -34,7 +34,7 @@ void Mesh::InitialiseQuad()
 
 	vertices[3].position = { -0.5,	0,	-0.5,	1 };
 	vertices[4].position = {  0.5,	0,	 0.5,	1 };
-	vertices[5].position = { -0.5,	0,	-0.5,	1 };
+	vertices[5].position = {  0.5,	0,	-0.5,	1 };
 
 	// Fill the vertex buffer
 	glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(Vertex), vertices, GL_STATIC_DRAW);

@@ -28,13 +28,13 @@ bool GraphicsApp::startup() {
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
 
-	//m_milkyWay = new SolarSystem();
-
 	// create simple camera transforms
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.0f);
 
-	return true;
+	m_milkyWay = new SolarSystem();
+
+	return LaunchShaders();
 }
 
 void GraphicsApp::shutdown()
@@ -62,7 +62,7 @@ void GraphicsApp::update(float deltaTime) {
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
-	//m_milkyWay->Update(deltaTime);
+	m_milkyWay->Update(deltaTime);
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
@@ -79,7 +79,38 @@ void GraphicsApp::draw() {
 	// update perspective based on screen size
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	//m_milkyWay->Draw(m_projectionMatrix * m_viewMatrix);
+	m_milkyWay->Draw(m_projectionMatrix * m_viewMatrix);
+
+	// Bind the shader
+	m_shader.bind();
+
+	// Bind the transform
+	auto pvm = m_projectionMatrix * m_viewMatrix * m_quadTransform;
+	m_shader.bindUniform("ProjectionViewModel", pvm);
+
+	// Draw the quad
+	m_quadMesh.Draw();
 
 	Gizmos::draw(m_projectionMatrix * m_viewMatrix);
+}
+
+bool GraphicsApp::LaunchShaders()
+{
+	m_shader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/simple.vert");
+	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/simple.frag");
+	if (m_shader.link() == false)
+	{
+		printf("Simple Shader Error: %s\n", m_shader.getLastError());
+		return false;
+	}
+
+	m_quadMesh.InitialiseQuad();
+	m_quadTransform = {
+		10,  0,	0,	0,
+		 0, 10,	0,	0,
+		 0,	 0, 10,	0,
+		 0,	 0,  0,	1
+	}; // this is 10 units large
+
+	return true;
 }
