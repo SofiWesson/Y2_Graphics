@@ -1,4 +1,7 @@
 #include "GraphicsApp.h"
+#include "SolarSystem.h"
+#include "Planet.h"
+
 #include "Gizmos.h"
 #include "Input.h"
 #include <glm/glm.hpp>
@@ -9,8 +12,9 @@ using glm::vec4;
 using glm::mat4;
 using aie::Gizmos;
 
-GraphicsApp::GraphicsApp() {
-
+GraphicsApp::GraphicsApp()
+{
+	
 }
 
 GraphicsApp::~GraphicsApp() {
@@ -24,6 +28,8 @@ bool GraphicsApp::startup() {
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
 
+	//m_milkyWay = new SolarSystem();
+
 	// create simple camera transforms
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.0f);
@@ -31,8 +37,8 @@ bool GraphicsApp::startup() {
 	return true;
 }
 
-void GraphicsApp::shutdown() {
-
+void GraphicsApp::shutdown()
+{
 	Gizmos::destroy();
 }
 
@@ -40,7 +46,7 @@ void GraphicsApp::update(float deltaTime) {
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
-
+	
 	// draw a simple grid with gizmos
 	vec4 white(1);
 	vec4 black(0, 0, 0, 1);
@@ -56,6 +62,8 @@ void GraphicsApp::update(float deltaTime) {
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
+	//m_milkyWay->Update(deltaTime);
+
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
 
@@ -70,6 +78,8 @@ void GraphicsApp::draw() {
 
 	// update perspective based on screen size
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
+
+	//m_milkyWay->Draw(m_projectionMatrix * m_viewMatrix);
 
 	Gizmos::draw(m_projectionMatrix * m_viewMatrix);
 }
