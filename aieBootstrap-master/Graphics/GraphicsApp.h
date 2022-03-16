@@ -35,8 +35,12 @@ protected:
 	void LoadQuadMesh();
 	void LoadBoxMesh();
 	void LoadPyramidMesh();
+	void LoadGridMesh();
 
 	aie::ShaderProgram m_shader;
+	aie::ShaderProgram m_phongShader;
+
+	glm::mat4 m_modelTransform;
 
 	// Generic quad data
 	Mesh m_quadMesh;
@@ -50,6 +54,10 @@ protected:
 	Mesh m_pyramidMesh;
 	glm::mat4 m_pyramidTransform;
 
+	// Grid data
+	Mesh m_gridMesh;
+	glm::mat4 m_gridTransform;
+
 	// Stanford bunny data
 	aie::OBJMesh m_bunnyMesh;
 	glm::mat4 m_bunnyTransform;
@@ -60,4 +68,12 @@ protected:
 
 	SolarSystem* m_solarSystem = nullptr;
 
+	struct Light
+	{
+		glm::vec3 direction;
+		glm::vec3 colour;
+	};
+
+	Light m_light;
+	glm::vec3 m_ambientLight;
 };
