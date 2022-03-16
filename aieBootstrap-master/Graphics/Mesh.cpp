@@ -51,6 +51,49 @@ void Mesh::InitialiseQuad()
 	m_triCount = 2;
 }
 
+void Mesh::Initialise(unsigned int a_vertexCount, const Vertex* a_vertices, unsigned int a_indexCount, unsigned int* a_indices)
+{
+	// Check if the mesh is not initialised already
+
+	assert(m_vao == 0);
+
+	// Generate buffers
+	glGenBuffers(1, &m_vbo);
+	glGenVertexArrays(1, &m_vao);
+
+	// Bind the vertex array, this is our mesh wrapper
+	glBindVertexArray(m_vao);
+
+	// Bind the vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+	// Fill the vertex buffer
+	glBufferData(GL_ARRAY_BUFFER, a_vertexCount * sizeof(Vertex), a_vertices, GL_STATIC_DRAW);
+
+	// Enable the first elecment as the position 
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+
+	if (a_indexCount != 0)
+	{
+		glGenBuffers(1, &m_ibo);
+
+		// Bind the vertex buffers
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+
+		// Fill the vertex buffer
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, a_indexCount * sizeof(unsigned int), a_indices, GL_STATIC_DRAW);
+		m_triCount = a_indexCount / 3;
+	}
+	else
+		m_triCount = a_vertexCount / 3;
+
+	// Now unbind the buffers
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
 void Mesh::Draw()
 {
 	glBindVertexArray(m_vao);
