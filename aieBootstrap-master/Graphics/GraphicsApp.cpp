@@ -9,6 +9,7 @@
 #include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <iostream>
 
 using glm::vec3;
 using glm::vec4;
@@ -83,6 +84,11 @@ void GraphicsApp::update(float deltaTime) {
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
 
+	if (input->isKeyDown(aie::INPUT_KEY_1) && !input->isKeyDown(aie::INPUT_KEY_1)) // not working
+		m_camera.setPosition(m_camera.GetPosition() + glm::vec3(1, 1, 1));
+
+#pragma region RotateBunny
+
 	if (input->isKeyDown(aie::INPUT_KEY_UP))
 		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'x', 0.1f);
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
@@ -98,13 +104,29 @@ void GraphicsApp::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_PERIOD))
 		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'z', 0.1f);
 
+#pragma endregion
+
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
-	ImGui::Begin("Light Settings");
-	ImGui::DragFloat3("Global Light Direction", &m_light.direction[0], 0.1f, -1.0f, 1.0f);
-	ImGui::DragFloat3("Global Light Colour", &m_light.colour[0], 0.1f, 0.0f, 2.0f);
+#pragma region ImGUI Light Settings
+
+	// ImGui::Begin("Light Settings");
+	// ImGui::DragFloat3("Global Light Direction", &m_light.direction[0], 0.1f, -1.0f, 1.0f);
+	// ImGui::DragFloat3("Global Light Colour", &m_light.colour[0], 0.1f, 0.0f, 2.0f);
+	// ImGui::End();
+
+#pragma endregion
+#pragma region ImGUI Local Transform
+
+	ImGui::Begin("Local Transform");
+	ImGui::DragFloat3("Position", &m_camera.GetPosition()[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Rotation", &m_camera.GetRotation()[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Scale", &m_camera.GetScale()[0], 0.1f, -1.0f, 1.0f);
 	ImGui::End();
+
+#pragma endregion
+
 }
 
 void GraphicsApp::draw()
@@ -113,16 +135,18 @@ void GraphicsApp::draw()
 	clearScreen();
 
 	// update perspective based on screen size
-	// m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
+	//m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
 
-	glm::mat4 projectionMatrix = m_camera.getProtection((float)getWindowWidth(), (float)getWindowHeight());
+	glm::mat4 projectionMatrix = m_camera.getProjection((float)getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_camera.getView();
+	auto pvm = projectionMatrix * viewMatrix * glm::mat4(1);
 
 	if (m_solarSystem != nullptr)
 		m_solarSystem->Draw(projectionMatrix * viewMatrix);
 
+#pragma region Bunny
+
 	// Bind the shader
-	// m_shader.bind();
 	m_phongShader.bind();
 
 	m_modelTransform = m_bunnyTransform;
@@ -134,19 +158,44 @@ void GraphicsApp::draw()
 	m_phongShader.bindUniform("CameraPosition", m_camera.GetPosition());
 
 	// Bind the transform
-	auto pvm = projectionMatrix * viewMatrix * m_modelTransform;
+	pvm = projectionMatrix * viewMatrix * m_modelTransform;
 	// m_shader.bindUniform("ProjectionViewModel", pvm);
 	m_phongShader.bindUniform("ProjectionViewModel", pvm);
 
 	// Simple binding for lighting data based on model used
 	m_phongShader.bindUniform("ModelMatrix", m_modelTransform);
 	
+	m_bunnyMesh.draw();
+
+#pragma endregion
+#pragma region SoulSpear
+
+	m_textureShader.bind();
+	pvm = projectionMatrix * viewMatrix * m_spearTransform;
+	m_textureShader.bindUniform("ProjectionViewModel", pvm);
+
+	//m_spearMesh.draw();
+
+#pragma endregion
+#pragma region Quad
+
+	m_textureShader.bind();
+
+	m_modelTransform = m_quadTransform;
+
+	pvm = projectionMatrix * viewMatrix * m_modelTransform;
+	m_textureShader.bindUniform("ProjectionViewModel", pvm);
+	m_textureShader.bindUniform("diffuseTexture", 0);
+	m_gridTexture.bind(0);
+	m_quadMesh.Draw();
+
+#pragma endregion
+
 	// Draw the mesh
-	// m_quadMesh.Draw();
+	//m_quadMesh.Draw();
 	// m_boxMesh.Draw();
 	// m_pyramidMesh.Draw();
 	// m_gridMesh.Draw();
-	m_bunnyMesh.draw();
 
 	//// Bind the shader
 	//m_phongShader.bind();
@@ -156,8 +205,6 @@ void GraphicsApp::draw()
 	//// Bind the transform
 	//pvm = projectionMatrix * viewMatrix * m_modelTransform;
 	//m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	//m_gridMesh.Draw();
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
 }
@@ -204,6 +251,8 @@ glm::mat4 GraphicsApp::RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radia
 
 bool GraphicsApp::LaunchShaders()
 {
+#pragma region Simple Shader
+
 	m_shader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/simple.vert");
 	m_shader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/simple.frag");
 	if (m_shader.link() == false)
@@ -211,6 +260,9 @@ bool GraphicsApp::LaunchShaders()
 		printf("Simple Shader Error: %s\n", m_shader.getLastError());
 		return false;
 	}
+
+#pragma endregion
+#pragma region Phong Shader
 
 	m_phongShader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/Phong.vert");
 	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/Phong.frag");
@@ -220,10 +272,35 @@ bool GraphicsApp::LaunchShaders()
 		return false;
 	}
 
-	//LoadQuadMesh();
-	//LoadBoxMesh();
-	//LoadPyramidMesh();
-	LoadGridMesh();
+#pragma endregion
+#pragma region Texture Shader
+
+	m_textureShader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/texture.vert");
+	m_textureShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/texture.frag");
+	if (m_textureShader.link() == false)
+	{
+		printf("Texture Shader Error: s\n", m_textureShader.getLastError());
+		return false;
+	}
+
+#pragma endregion
+#pragma region Textured Quad Mesh
+
+	if (m_gridTexture.load("./textures/numbered_grid.tga") == false)
+	{
+		printf("Failed to load texture, please check file path!\n");
+		return false;
+	}
+	m_quadMesh.InitialiseQuad();
+	m_quadTransform = {
+		10,  0,	0,	0,
+		 0, 10,	0,	0,
+		 0,	 0, 10,	0,
+		 0,	 0,  0,	1
+	};
+	
+#pragma endregion
+#pragma region Bunny Mesh
 
 	if (m_bunnyMesh.load("./stanford/bunny.obj") == false)
 	{
@@ -236,6 +313,28 @@ bool GraphicsApp::LaunchShaders()
 		   0,	 0, 0.5f,	0,
 		   0,	 0,     0,	1
 	}; // this is 10 units large
+
+#pragma endregion
+#pragma region Spear Mesh
+
+	if (m_spearMesh.load("./soulspear/soulspear.obj", true, true) == false)
+	{
+		printf("Spear mesh error!\n");
+		return false;
+	}
+	m_spearTransform = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	}; // this is 10 units large
+
+#pragma endregion
+
+	//LoadQuadMesh();
+	//LoadBoxMesh();
+	//LoadPyramidMesh();
+	//LoadGridMesh();
 
 	return true;
 }

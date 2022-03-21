@@ -5,6 +5,7 @@
 #include "Input.h"
 #include <Windows.h>
 
+#pragma region FlyCamera
 
 void FlyCamera::update(float a_dt)
 {
@@ -65,7 +66,7 @@ void FlyCamera::update(float a_dt)
 	m_lastMouseY = my;
 }
 
-glm::mat4 FlyCamera::getViewMatrix()
+glm::mat4 FlyCamera::getView()
 {
 	float thetaR = glm::radians(m_theta);
 	float phiR = glm::radians(m_phi);
@@ -73,12 +74,13 @@ glm::mat4 FlyCamera::getViewMatrix()
 	return glm::lookAt(m_position, m_position + forward, glm::vec3(0, 1, 0));
 }
 
-glm::mat4 FlyCamera::getProjectionMatrix(float w, float h)
+glm::mat4 FlyCamera::getProjection(float w, float h)
 {
 	return glm::perspective(glm::pi<float>() * 0.25f, w / h, 0.1f, 1000.f);
 }
 
-// ============================================================================================================
+#pragma endregion
+#pragma region Camera
 
 void Camera::update(float a_dt)
 {
@@ -94,40 +96,98 @@ void Camera::setLookAt(glm::vec3 a_from, glm::vec3 a_to, glm::vec3 a_up)
 
 void Camera::setPosition(glm::vec3 a_position)
 {
+	glm::mat4 tempMat{
+		1, 0, 0, a_position.x,
+		0, 1, 0, a_position.y,
+		0, 0, 1, a_position.z,
+		0, 0, 0, 1
+	};
+
+	m_localTransform *= tempMat;
+
+	m_position = a_position;
+}
+
+void Camera::setRotation(glm::vec3 a_rotation)
+{
+	float _cos = 0;
+	float _sin = 0;
+
+	glm::mat4 tempMat;
+
+#pragma region X Rotation
+
+	_cos = cos(glm::radians(a_rotation.x));
+	_sin = sin(glm::radians(a_rotation.x));
+
+	tempMat = {
+		1,    0,     0, 0,
+		0, _cos, -_sin, 0,
+		0, _sin,  _cos, 0,
+		0,	  0,     0, 1 
+	};
+
+	m_localTransform *= tempMat;
+
+#pragma endregion
+#pragma region Y Rotation
+
+	_cos = cos(glm::radians(a_rotation.y));
+	_sin = sin(glm::radians(a_rotation.y));
+
+	tempMat = {
+		 _cos, 0, _sin, 0,
+		    0, 1,    0, 0,
+		-_sin, 0, _cos, 0,
+		    0, 0,    0, 1
+	};
+
+	m_localTransform *= tempMat;
+
+#pragma endregion
+#pragma region Z Rotation
+
+	_cos = cos(glm::radians(a_rotation.z));
+	_sin = sin(glm::radians(a_rotation.z));
+
+	tempMat = {
+		_cos, -_sin, 0, 0,
+		_sin,  _cos, 0, 0,
+		   0,     0, 1, 0,
+		   0,     0, 0, 1
+	};
+
+	m_localTransform *= tempMat;
+
+#pragma endregion
+
+	m_rotation = a_rotation;
+}
+
+void Camera::setScale(glm::vec3 a_scale)
+{
+	glm::mat4 tempMat{
+		a_scale.x,		   0,		  0, 0,
+		        0, a_scale.y,		  0, 0,
+				0,		   0, a_scale.z, 0,
+				0,		   0,		  0, 1 
+	};
+
+	m_localTransform *= tempMat;
+
+	m_scale = a_scale;
 }
 
 glm::mat4 Camera::getWorldTransform()
 {
-	glm::mat4 tempMat;
+	glm::mat4 tempMat {
+		1, 0, 0, 0, // 0
+		0, 1, 0, 0,	// 1
+		0, 0, 1, 0, // 2
+		0, 0, 0, 1  // 3
+	};//x  y  z  w
 
-	float
-		a = 1, b = 0, c = 0, d = 0,
-		e = 0, f = 1, g = 0, h = 0,
-		i = 0, j = 0, k = 1, l = 0,
-		m = 0, n = 0, o = 0, p = 1;
-
-	float cos = glm::cos(glm::radians(m_theta));
-	float sin = glm::sin(glm::radians(m_phi));
-
-	// x rotation
-	f += cos;
-	g += -sin;
-	j += sin;
-	k += cos;
-
-	// y rotation
-
-
-	tempMat = {
-	a, b, c, d,
-	e, f, g, h,
-	i, j, k, l,
-	m, n, o, p
-	};
-
-	m_worldTransform *= tempMat;
-
-	return m_worldTransform;
+	return m_localTransform;
 }
 
 glm::mat4 Camera::getView()
@@ -138,16 +198,18 @@ glm::mat4 Camera::getView()
 	return glm::lookAt(m_position, m_position + forward, glm::vec3(0, 1, 0));
 }
 
-glm::mat4 Camera::getProtection(float w, float h)
+glm::mat4 Camera::getProjection(float w, float h)
 {
 	return glm::perspective(glm::pi<float>() * 0.25f, w / h, 0.1f, 1000.f);
 }
 
 glm::mat4 Camera::getProjectionView(float w, float h)
 {
-	return getView() * getProtection(w, h);
+	return getView() * getProjection(w, h);
 }
 
 void Camera::updateProjectionViewTransform()
 {
 }
+
+#pragma endregion

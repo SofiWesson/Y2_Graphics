@@ -40,8 +40,12 @@ protected:
 	void LoadPyramidMesh();
 	void LoadGridMesh();
 
+	aie::Texture m_gridTexture;
+	aie::Texture m_spearTexture;
+
 	aie::ShaderProgram m_shader;
 	aie::ShaderProgram m_phongShader;
+	aie::ShaderProgram m_textureShader;
 
 	glm::mat4 m_modelTransform;
 
@@ -64,6 +68,10 @@ protected:
 	// Stanford bunny data
 	aie::OBJMesh m_bunnyMesh;
 	glm::mat4 m_bunnyTransform;
+
+	// Soulspear data
+	aie::OBJMesh m_spearMesh;
+	glm::mat4 m_spearTransform;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;
