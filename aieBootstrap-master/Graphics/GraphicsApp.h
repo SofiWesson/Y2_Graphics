@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Application.h"
+#include "Camera.h"
 #include "SolarSystem.h"
 #include "Planet.h"
 #include "Shader.h"
@@ -11,6 +12,8 @@
 #include <Input.h>
 
 class Application;
+class Camera;
+class FlyCamera;
 class SolarSystem;
 class Planet;
 
@@ -65,6 +68,9 @@ protected:
 	// camera transforms
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
+
+	Camera m_camera;
+	FlyCamera m_flyCamera;
 
 	SolarSystem* m_solarSystem = nullptr;
 

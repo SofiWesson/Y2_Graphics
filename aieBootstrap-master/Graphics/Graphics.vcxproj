@@ -166,6 +166,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GraphicsApp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="SolarSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="GraphicsApp.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="OBJMesh.h" />

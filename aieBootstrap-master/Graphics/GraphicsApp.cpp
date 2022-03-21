@@ -1,6 +1,7 @@
 #include <imgui.h>
 
 #include "GraphicsApp.h"
+#include "Camera.h"
 #include "SolarSystem.h"
 #include "Planet.h"
 
@@ -77,22 +78,24 @@ void GraphicsApp::update(float deltaTime) {
 	if (m_solarSystem != nullptr)
 		m_solarSystem->Update(deltaTime);
 
+	m_camera.update(deltaTime);
+
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
 
-	if (input->isKeyDown(aie::INPUT_KEY_S))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'x', -0.1f);
-	if (input->isKeyDown(aie::INPUT_KEY_W))
+	if (input->isKeyDown(aie::INPUT_KEY_UP))
 		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'x', 0.1f);
-
-	if (input->isKeyDown(aie::INPUT_KEY_D))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'y', -0.1f);
-	if (input->isKeyDown(aie::INPUT_KEY_A))
+	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'x', -0.1f);
+	
+	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
 		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'y', 0.1f);
-
-	if (input->isKeyDown(aie::INPUT_KEY_Q))
+	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'y', -0.1f);
+	
+	if (input->isKeyDown(aie::INPUT_KEY_COMMA))
 		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'z', -0.1f);
-	if (input->isKeyDown(aie::INPUT_KEY_E))
+	if (input->isKeyDown(aie::INPUT_KEY_PERIOD))
 		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'z', 0.1f);
 
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -104,16 +107,19 @@ void GraphicsApp::update(float deltaTime) {
 	ImGui::End();
 }
 
-void GraphicsApp::draw() {
-
+void GraphicsApp::draw()
+{
 	// wipe the screen to the background colour
 	clearScreen();
 
 	// update perspective based on screen size
-	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
+	// m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
+
+	glm::mat4 projectionMatrix = m_camera.getProtection((float)getWindowWidth(), (float)getWindowHeight());
+	glm::mat4 viewMatrix = m_camera.getView();
 
 	if (m_solarSystem != nullptr)
-		m_solarSystem->Draw(m_projectionMatrix * m_viewMatrix);
+		m_solarSystem->Draw(projectionMatrix * viewMatrix);
 
 	// Bind the shader
 	// m_shader.bind();
@@ -125,12 +131,15 @@ void GraphicsApp::draw() {
 	m_phongShader.bindUniform("LightColour", m_light.colour);
 	m_phongShader.bindUniform("LightDirection", m_light.direction);
 
-	m_phongShader.bindUniform("CameraPosition", glm::vec3(glm::inverse(m_viewMatrix)[3]));
+	m_phongShader.bindUniform("CameraPosition", m_camera.GetPosition());
 
 	// Bind the transform
-	auto pvm = m_projectionMatrix * m_viewMatrix * m_modelTransform;
+	auto pvm = projectionMatrix * viewMatrix * m_modelTransform;
 	// m_shader.bindUniform("ProjectionViewModel", pvm);
 	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+
+	// Simple binding for lighting data based on model used
+	m_phongShader.bindUniform("ModelMatrix", m_modelTransform);
 	
 	// Draw the mesh
 	// m_quadMesh.Draw();
@@ -139,21 +148,18 @@ void GraphicsApp::draw() {
 	// m_gridMesh.Draw();
 	m_bunnyMesh.draw();
 
-	// Bind the shader
-	m_phongShader.bind();
+	//// Bind the shader
+	//m_phongShader.bind();
 
-	m_modelTransform = m_gridTransform;
+	//m_modelTransform = m_gridTransform;
 
-	// Bind the transform
-	pvm = m_projectionMatrix * m_viewMatrix  * m_modelTransform;
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+	//// Bind the transform
+	//pvm = projectionMatrix * viewMatrix * m_modelTransform;
+	//m_phongShader.bindUniform("ProjectionViewModel", pvm);
 
-	// Simple binding for lighting data based on model used
-	m_phongShader.bindUniform("ModelMatrix", m_modelTransform);
+	//m_gridMesh.Draw();
 
-	m_gridMesh.Draw();
-
-	Gizmos::draw(m_projectionMatrix * m_viewMatrix);
+	Gizmos::draw(projectionMatrix * viewMatrix);
 }
 
 glm::mat4 GraphicsApp::RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radian)
@@ -330,12 +336,12 @@ void GraphicsApp::LoadGridMesh()
 	Mesh::Vertex vertices[numVertices];
 	unsigned int indices[numIndices];
 
-	for (int i = 0; i < 11;)
+	for (int i = 0; i < 44;)
 	{
-		vertices[i].position =     { -0.5f,	.1,	  0.5f - posOffset, 1 }; // bottom left
-		vertices[i + 1].position = {  0.5f,	.1,   0.5f - posOffset, 1 }; // bottom front
-		vertices[i + 2].position = { -0.5f, .1, 0.498f - posOffset, 1 }; // bottom back
-		vertices[i + 3].position = {  0.5f,	.1,	0.498f - posOffset, 1 }; // bottom right
+		vertices[i].position =     { -0.5f,	.01,	  0.5f - posOffset, 1 }; // bottom left
+		vertices[i + 1].position = {  0.5f,	.01,      0.5f - posOffset, 1 }; // bottom front
+		vertices[i + 2].position = { -0.5f, .01,    0.498f - posOffset, 1 }; // bottom back
+		vertices[i + 3].position = {  0.5f,	.01,	0.498f - posOffset, 1 }; // bottom right
 
 		indices[indicesCount]     =     i;
 		indices[indicesCount + 1] = i + 1;
