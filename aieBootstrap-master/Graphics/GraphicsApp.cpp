@@ -332,17 +332,17 @@ bool GraphicsApp::LaunchShaders()
 #pragma endregion
 #pragma region Potion Mesh
 
-	// if (m_potionMesh.load("./potion/Potion.obj", true, true) == false)
-	// {
-	// 	printf("potion mesh error!\n");
-	// 	return false;
-	// }
-	// m_potionTransform = {
-	// 	1, 0, 0, 0,
-	// 	0, 1, 0, 0,
-	// 	0, 0, 1, 0,
-	// 	0, 2, 0, 1
-	// };
+	if (m_potionMesh.load("./potion/Potion.obj", true, true) == false)
+	{
+		printf("potion mesh error!\n");
+		return false;
+	}
+	m_potionTransform = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 2, 0, 1
+	};
 
 #pragma endregion
 
