@@ -81,11 +81,14 @@ void GraphicsApp::update(float deltaTime) {
 
 	m_camera.update(deltaTime);
 
-	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
 
-	if (input->isKeyDown(aie::INPUT_KEY_1) && !input->isKeyDown(aie::INPUT_KEY_1)) // not working
-		m_camera.setPosition(m_camera.GetPosition() + glm::vec3(1, 1, 1));
+	if (input->isKeyDown(aie::INPUT_KEY_1) && !input->isKeyUp(aie::INPUT_KEY_1))
+		m_camera.setPosition(m_camera.GetPosition() + glm::vec3(.01f, .01f, .01f));
+	if (input->isKeyDown(aie::INPUT_KEY_2) && !input->isKeyUp(aie::INPUT_KEY_2))
+		m_camera.setRotation(m_camera.GetRotation() + glm::vec3(.01f, .01f, .01f));
+	if (input->isKeyDown(aie::INPUT_KEY_3) && !input->isKeyUp(aie::INPUT_KEY_3))
+		m_camera.setScale(m_camera.GetScale() + glm::vec3(.01f, .01f, .01f));
 
 #pragma region RotateBunny
 
@@ -106,6 +109,7 @@ void GraphicsApp::update(float deltaTime) {
 
 #pragma endregion
 
+	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
 
@@ -165,16 +169,44 @@ void GraphicsApp::draw()
 	// Simple binding for lighting data based on model used
 	m_phongShader.bindUniform("ModelMatrix", m_modelTransform);
 	
-	m_bunnyMesh.draw();
+	//m_bunnyMesh.draw();
 
 #pragma endregion
 #pragma region SoulSpear
 
-	m_textureShader.bind();
-	pvm = projectionMatrix * viewMatrix * m_spearTransform;
-	m_textureShader.bindUniform("ProjectionViewModel", pvm);
+	m_normalMapShader.bind();
+	m_modelTransform = m_spearTransform;
+
+	m_normalMapShader.bindUniform("AmbientColour", m_ambientLight);
+	m_normalMapShader.bindUniform("LightColour", m_light.colour);
+	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
+
+	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
+
+	pvm = projectionMatrix * viewMatrix * m_modelTransform;
+	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
+	m_normalMapShader.bindUniform("ModelMatrix", m_modelTransform);
 
 	//m_spearMesh.draw();
+
+#pragma endregion
+#pragma region Potion
+
+	m_normalMapShader.bind();
+	m_modelTransform = m_potionTransform;
+
+	m_normalMapShader.bindUniform("AmbientColour", m_ambientLight);
+	m_normalMapShader.bindUniform("LightColour", m_light.colour);
+	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
+
+	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
+
+	pvm = projectionMatrix * viewMatrix * m_modelTransform;
+
+	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
+	m_normalMapShader.bindUniform("ModelMatrix", m_modelTransform);
+
+	m_potionMesh.draw();
 
 #pragma endregion
 #pragma region Quad
@@ -279,7 +311,18 @@ bool GraphicsApp::LaunchShaders()
 	m_textureShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/texture.frag");
 	if (m_textureShader.link() == false)
 	{
-		printf("Texture Shader Error: s\n", m_textureShader.getLastError());
+		printf("Texture Shader Error: %s\n", m_textureShader.getLastError());
+		return false;
+	}
+
+#pragma endregion
+#pragma region Normal Map Shader
+
+	m_normalMapShader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/normalMap.vert");
+	m_normalMapShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/normalMap.frag");
+	if (m_normalMapShader.link() == false)
+	{
+		printf("Normal Map Shader Error: %s\n", m_normalMapShader.getLastError());
 		return false;
 	}
 
@@ -330,6 +373,22 @@ bool GraphicsApp::LaunchShaders()
 	}; // this is 10 units large
 
 #pragma endregion
+#pragma region Potion Mesh
+
+	if (m_potionMesh.load("./potion/Potion.obj", true, true) == false)
+	{
+		printf("potion mesh error!\n");
+		return false;
+	}
+	m_potionTransform = {
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 2, 0, 1
+	};
+
+#pragma endregion
+
 
 	//LoadQuadMesh();
 	//LoadBoxMesh();

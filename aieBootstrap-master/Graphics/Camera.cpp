@@ -178,6 +178,70 @@ void Camera::setScale(glm::vec3 a_scale)
 	m_scale = a_scale;
 }
 
+glm::vec3 Camera::GetPosition()
+{
+	glm::vec3 temp;
+
+	temp.x = m_localTransform[0].w;
+	temp.y = m_localTransform[1].w;
+	temp.z = m_localTransform[2].w;
+
+	return temp;
+}
+
+glm::vec3 Camera::GetRotation()
+{
+	glm::vec3 vTemp;
+	glm::mat4 tempMat {
+		1, 0, 0, 0, // 0
+		0, 1, 0, 0,	// 1
+		0, 0, 1, 0, // 2
+		0, 0, 0, 1  // 3
+	};//x  y  z  w
+	
+	glm::vec3 scale = GetScale();
+
+	tempMat[0].x = m_localTransform[0].x / scale.x; // 0x
+	tempMat[0].y = m_localTransform[0].y / scale.y; // 0y
+	tempMat[0].z = m_localTransform[0].z / scale.z; // 0z
+
+	tempMat[1].x = m_localTransform[1].x / scale.x; // 1x
+	tempMat[1].y = m_localTransform[1].y / scale.y;	// 1y
+	tempMat[1].z = m_localTransform[1].z / scale.z; // 1z
+
+	tempMat[2].x = m_localTransform[2].x / scale.x; // 2x
+	tempMat[2].y = m_localTransform[2].y / scale.y;	// 2y
+	tempMat[2].z = m_localTransform[2].z / scale.z;	// 2z
+
+	float trace = tempMat[0].x + tempMat[1].y + tempMat[2].z;
+	// not complete
+
+	float w = glm::sqrt(1.f + m_localTransform[0].x + m_localTransform[1].y + m_localTransform[2].z) / 2.f;
+	double w4 = 4.f * w;
+
+	// Get quaternoins from rotation matrix
+	float qx = (m_localTransform[2].y - m_localTransform[1].z) / w4;
+	float qy = (m_localTransform[0].z - m_localTransform[2].x) / w4;
+	float qz = (m_localTransform[1].x - m_localTransform[0].y) / w4;
+
+	return m_rotation;
+}
+
+glm::vec3 Camera::GetScale()
+{
+	glm::vec3 temp;
+
+	glm::vec3 x(m_localTransform[0].x, m_localTransform[1].x, m_localTransform[2].x);
+	glm::vec3 y(m_localTransform[0].y, m_localTransform[1].y, m_localTransform[2].y);
+	glm::vec3 z(m_localTransform[0].z, m_localTransform[1].z, m_localTransform[2].z);
+
+	temp.x = glm::length(x);
+	temp.y = glm::length(y);
+	temp.z = glm::length(z);
+
+	return temp;
+}
+
 glm::mat4 Camera::getWorldTransform()
 {
 	glm::mat4 tempMat {

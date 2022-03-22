@@ -21,9 +21,9 @@ public:
 	void setPosition(glm::vec3 a_position);
 	void setRotation(glm::vec3 a_rotation);
 	void setScale(glm::vec3 a_scale);
-	glm::vec3 GetPosition() { return m_position; }
-	glm::vec3 GetRotation() { return m_rotation; }
-	glm::vec3 GetScale() { return m_scale; }
+	glm::vec3 GetPosition();
+	glm::vec3 GetRotation();
+	glm::vec3 GetScale();
 	glm::mat4 getLocalTransform() { return m_localTransform; }
 	glm::mat4 getWorldTransform();
 	glm::mat4 getView();

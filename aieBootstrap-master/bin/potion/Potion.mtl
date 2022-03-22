@@ -1,0 +1,13 @@
+#
+#
+#
+
+newmtl Main
+illum 2
+Ka 0.500000 0.500000 0.500000
+Kd 0.800000 0.800000 0.800000
+Ks 0.800000 0.800000 0.800000
+Ns 20.000000
+map_Kd potion_diffuse.jpg
+map_Ks potion_specular.jpg
+bump potion_normal.jpg

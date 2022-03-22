@@ -42,10 +42,12 @@ protected:
 
 	aie::Texture m_gridTexture;
 	aie::Texture m_spearTexture;
+	aie::Texture m_potionTexture;
 
 	aie::ShaderProgram m_shader;
 	aie::ShaderProgram m_phongShader;
 	aie::ShaderProgram m_textureShader;
+	aie::ShaderProgram m_normalMapShader;
 
 	glm::mat4 m_modelTransform;
 
@@ -72,6 +74,10 @@ protected:
 	// Soulspear data
 	aie::OBJMesh m_spearMesh;
 	glm::mat4 m_spearTransform;
+
+	// Potion data
+	aie::OBJMesh m_potionMesh;
+	glm::mat4 m_potionTransform;
 
 	// camera transforms
 	glm::mat4	m_viewMatrix;
