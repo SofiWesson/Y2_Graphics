@@ -9,6 +9,7 @@
 #include "OBJMesh.h"
 #include "Instance.h"
 #include "Scene.h"
+#include "RenderTarget.h"
 
 #include <glm/mat4x4.hpp>
 #include <Input.h>
@@ -51,6 +52,8 @@ protected:
 	aie::ShaderProgram m_phongShader;
 	aie::ShaderProgram m_textureShader;
 	aie::ShaderProgram m_normalMapShader;
+
+	aie::RenderTarget m_renderTarget;
 
 	glm::mat4 m_modelTransform;
 

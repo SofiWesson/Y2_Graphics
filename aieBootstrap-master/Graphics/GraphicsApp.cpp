@@ -144,6 +144,9 @@ void GraphicsApp::update(float deltaTime) {
 
 void GraphicsApp::draw()
 {
+	// We need to bind our render target first
+	m_renderTarget.bind();
+
 	// wipe the screen to the background colour
 	clearScreen();
 
@@ -156,6 +159,13 @@ void GraphicsApp::draw()
 	if (m_solarSystem != nullptr)
 		m_solarSystem->Draw(projectionMatrix * viewMatrix);
 
+	m_scene->Draw();
+
+	// Unbind the target to return it to the back buffer
+	m_renderTarget.unbind();
+
+	clearScreen();
+
 #pragma region Quad
 
 	m_textureShader.bind();
@@ -165,7 +175,10 @@ void GraphicsApp::draw()
 	pvm = projectionMatrix * viewMatrix * m_modelTransform;
 	m_textureShader.bindUniform("ProjectionViewModel", pvm);
 	m_textureShader.bindUniform("diffuseTexture", 0);
-	m_gridTexture.bind(0);
+
+	m_renderTarget.getTarget(0).bind(0);
+
+	//m_gridTexture.bind(0);
 	m_quadMesh.Draw();
 
 #pragma endregion
@@ -175,8 +188,6 @@ void GraphicsApp::draw()
 	// m_boxMesh.Draw();
 	// m_pyramidMesh.Draw();
 	// m_gridMesh.Draw();
-
-	m_scene->Draw();
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
 }
@@ -223,6 +234,12 @@ glm::mat4 GraphicsApp::RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radia
 
 bool GraphicsApp::LaunchShaders()
 {
+	if (m_renderTarget.initialise(1, getWindowWidth(), getWindowHeight()) == false)
+	{
+		printf("Render Target Error!\n");
+		return false;
+	}
+
 #pragma region Simple Shader
 
 	m_shader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/simple.vert");
@@ -285,7 +302,7 @@ bool GraphicsApp::LaunchShaders()
 #pragma endregion
 #pragma region Bunny Mesh
 
-	if (m_bunnyMesh.load("./stanford/bunny.obj") == false)
+	if (m_bunnyMesh.load("./stanford/Bunny.obj") == false)
 	{
 		printf("Bunny mesh error!\n");
 		return false;
@@ -315,20 +332,19 @@ bool GraphicsApp::LaunchShaders()
 #pragma endregion
 #pragma region Potion Mesh
 
-	if (m_potionMesh.load("./potion/Potion.obj", true, true) == false)
-	{
-		printf("potion mesh error!\n");
-		return false;
-	}
-	m_potionTransform = {
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 2, 0, 1
-	};
+	// if (m_potionMesh.load("./potion/Potion.obj", true, true) == false)
+	// {
+	// 	printf("potion mesh error!\n");
+	// 	return false;
+	// }
+	// m_potionTransform = {
+	// 	1, 0, 0, 0,
+	// 	0, 1, 0, 0,
+	// 	0, 0, 1, 0,
+	// 	0, 2, 0, 1
+	// };
 
 #pragma endregion
-
 
 	//LoadQuadMesh();
 	//LoadBoxMesh();
