@@ -7,6 +7,8 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "OBJMesh.h"
+#include "Instance.h"
+#include "Scene.h"
 
 #include <glm/mat4x4.hpp>
 #include <Input.h>
@@ -16,6 +18,7 @@ class Camera;
 class FlyCamera;
 class SolarSystem;
 class Planet;
+class Scene;
 
 class GraphicsApp : public aie::Application {
 public:
@@ -88,12 +91,7 @@ protected:
 
 	SolarSystem* m_solarSystem = nullptr;
 
-	struct Light
-	{
-		glm::vec3 direction;
-		glm::vec3 colour;
-	};
-
-	Light m_light;
 	glm::vec3 m_ambientLight;
+
+	Scene* m_scene;
 };

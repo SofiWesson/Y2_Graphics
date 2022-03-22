@@ -96,68 +96,46 @@ void Camera::setLookAt(glm::vec3 a_from, glm::vec3 a_to, glm::vec3 a_up)
 
 void Camera::setPosition(glm::vec3 a_position)
 {
-	glm::mat4 tempMat{
-		1, 0, 0, a_position.x,
-		0, 1, 0, a_position.y,
-		0, 0, 1, a_position.z,
-		0, 0, 0, 1
-	};
-
-	m_localTransform *= tempMat;
+	m_localTransform[0].w = a_position.x;
+	m_localTransform[1].w = a_position.y;
+	m_localTransform[2].w = a_position.z;
 
 	m_position = a_position;
 }
 
 void Camera::setRotation(glm::vec3 a_rotation)
 {
-	float _cos = 0;
-	float _sin = 0;
-
-	glm::mat4 tempMat;
-
 #pragma region X Rotation
 
-	_cos = cos(glm::radians(a_rotation.x));
-	_sin = sin(glm::radians(a_rotation.x));
+	float cosX = cos(glm::radians(a_rotation.x));
+	float sinX = sin(glm::radians(a_rotation.x));
 
-	tempMat = {
-		1,    0,     0, 0,
-		0, _cos, -_sin, 0,
-		0, _sin,  _cos, 0,
-		0,	  0,     0, 1 
-	};
-
-	m_localTransform *= tempMat;
+	m_localTransform[1].y = cosX - GetScale().y; // good
+	m_localTransform[1].z = -sinX;
+	m_localTransform[2].y = sinX;
+	m_localTransform[2].z = cosX + GetScale().z;
 
 #pragma endregion
 #pragma region Y Rotation
 
-	_cos = cos(glm::radians(a_rotation.y));
-	_sin = sin(glm::radians(a_rotation.y));
+	float cosY = cos(glm::radians(a_rotation.y));
+	float sinY = sin(glm::radians(a_rotation.y));
 
-	tempMat = {
-		 _cos, 0, _sin, 0,
-		    0, 1,    0, 0,
-		-_sin, 0, _cos, 0,
-		    0, 0,    0, 1
-	};
-
-	m_localTransform *= tempMat;
+	m_localTransform[0].x = cosY + GetScale().x;
+	m_localTransform[0].z = sinY;
+	m_localTransform[2].x = -sinY;
+	m_localTransform[2].z = cosY - GetScale().z;
 
 #pragma endregion
 #pragma region Z Rotation
 
-	_cos = cos(glm::radians(a_rotation.z));
-	_sin = sin(glm::radians(a_rotation.z));
+	float cosZ = cos(glm::radians(a_rotation.z));
+	float sinZ = sin(glm::radians(a_rotation.z));
 
-	tempMat = {
-		_cos, -_sin, 0, 0,
-		_sin,  _cos, 0, 0,
-		   0,     0, 1, 0,
-		   0,     0, 0, 1
-	};
-
-	m_localTransform *= tempMat;
+	m_localTransform[0].x = cosZ - GetScale().x;
+	m_localTransform[0].y = -sinZ;
+	m_localTransform[2].x = sinZ;
+	m_localTransform[2].y = cosZ;
 
 #pragma endregion
 
@@ -166,14 +144,9 @@ void Camera::setRotation(glm::vec3 a_rotation)
 
 void Camera::setScale(glm::vec3 a_scale)
 {
-	glm::mat4 tempMat{
-		a_scale.x,		   0,		  0, 0,
-		        0, a_scale.y,		  0, 0,
-				0,		   0, a_scale.z, 0,
-				0,		   0,		  0, 1 
-	};
-
-	m_localTransform *= tempMat;
+	m_localTransform[0].x + a_scale.x;
+	m_localTransform[1].y + a_scale.y;
+	m_localTransform[2].z + a_scale.z;
 
 	m_scale = a_scale;
 }
@@ -213,16 +186,45 @@ glm::vec3 Camera::GetRotation()
 	tempMat[2].y = m_localTransform[2].y / scale.y;	// 2y
 	tempMat[2].z = m_localTransform[2].z / scale.z;	// 2z
 
+	// safety check for divide by 0
 	float trace = tempMat[0].x + tempMat[1].y + tempMat[2].z;
-	// not complete
-
-	float w = glm::sqrt(1.f + m_localTransform[0].x + m_localTransform[1].y + m_localTransform[2].z) / 2.f;
-	double w4 = 4.f * w;
-
+	
 	// Get quaternoins from rotation matrix
-	float qx = (m_localTransform[2].y - m_localTransform[1].z) / w4;
-	float qy = (m_localTransform[0].z - m_localTransform[2].x) / w4;
-	float qz = (m_localTransform[1].x - m_localTransform[0].y) / w4;
+	glm::vec4 q = { 0.f, 0.f, 0.f, 0.f }; // quaternion
+	if (trace > 0)
+	{
+		float s = glm::sqrt(trace + 1.f) * 2.f;
+		q.w = .25f * s;
+		q.x = (m_localTransform[2].y - m_localTransform[1].z) / s;
+		q.y = (m_localTransform[0].z - m_localTransform[2].x) / s;
+		q.z = (m_localTransform[1].x - m_localTransform[0].y) / s;
+	}
+	else if (m_localTransform[0].x > m_localTransform[1].y && m_localTransform[0].x > m_localTransform[2].z)
+	{
+		float s = glm::sqrt(1.f + m_localTransform[0].x - m_localTransform[1].y - m_localTransform[2].z) * 2;
+		q.w = (m_localTransform[2].y - m_localTransform[1].z) / s;
+		q.x = .25f * s;
+		q.y = (m_localTransform[0].y + m_localTransform[1].x) / s;
+		q.z = (m_localTransform[0].z + m_localTransform[2].x) / s;
+	}
+	else if (m_localTransform[1].y > m_localTransform[2].z)
+	{
+		float s = glm::sqrt(1.f + m_localTransform[1].y - m_localTransform[0].x - m_localTransform[2].z) * 2;
+		q.w = (m_localTransform[0].z - m_localTransform[2].x) / s;
+		q.x = (m_localTransform[0].y + m_localTransform[1].x) / s;
+		q.y = .25f * s;
+		q.z = (m_localTransform[1].z + m_localTransform[2].y) / s;
+	}
+	else
+	{
+		float s = sqrt(1.f + m_localTransform[2].z - m_localTransform[0].x - m_localTransform[1].y) * 2;
+		q.w = (m_localTransform[1].x - m_localTransform[0].y) / s;
+		q.x = (m_localTransform[0].z + m_localTransform[2].x) / s;
+		q.y = (m_localTransform[1].z + m_localTransform[2].y) / s;
+		q.z = .25f * s;
+	}
+
+	// quaternions to rotations
 
 	return m_rotation;
 }

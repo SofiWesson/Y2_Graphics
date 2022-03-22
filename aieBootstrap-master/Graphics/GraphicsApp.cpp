@@ -32,11 +32,19 @@ bool GraphicsApp::startup() {
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
 
-	m_light.colour = { 1, 1, 0 };
+	Light light;
+	light.colour = { 1, 1, 1 };
+	light.direction = { 1, -1, 1 };
+	m_ambientLight = { 1, 1, 1 };
 
 	// create simple camera transforms
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.0f);
+
+	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), light, m_ambientLight);
+
+	m_scene->AddPointLights(glm::vec3(5, 3, 0), glm::vec3(1, 0, 0), 50);
+	m_scene->AddPointLights(glm::vec3(-5, 3, 0), glm::vec3(0, 0, 1), 50);
 
 	// m_solarSystem = new SolarSystem();
 
@@ -46,6 +54,7 @@ bool GraphicsApp::startup() {
 void GraphicsApp::shutdown()
 {
 	Gizmos::destroy();
+	delete m_scene;
 }
 
 void GraphicsApp::update(float deltaTime) {
@@ -139,8 +148,7 @@ void GraphicsApp::draw()
 	clearScreen();
 
 	// update perspective based on screen size
-	//m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, getWindowWidth() / (float)getWindowHeight(), 0.1f, 1000.0f);
-
+	
 	glm::mat4 projectionMatrix = m_camera.getProjection((float)getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_camera.getView();
 	auto pvm = projectionMatrix * viewMatrix * glm::mat4(1);
@@ -148,67 +156,6 @@ void GraphicsApp::draw()
 	if (m_solarSystem != nullptr)
 		m_solarSystem->Draw(projectionMatrix * viewMatrix);
 
-#pragma region Bunny
-
-	// Bind the shader
-	m_phongShader.bind();
-
-	m_modelTransform = m_bunnyTransform;
-
-	m_phongShader.bindUniform("AmbientColour", m_ambientLight);
-	m_phongShader.bindUniform("LightColour", m_light.colour);
-	m_phongShader.bindUniform("LightDirection", m_light.direction);
-
-	m_phongShader.bindUniform("CameraPosition", m_camera.GetPosition());
-
-	// Bind the transform
-	pvm = projectionMatrix * viewMatrix * m_modelTransform;
-	// m_shader.bindUniform("ProjectionViewModel", pvm);
-	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-
-	// Simple binding for lighting data based on model used
-	m_phongShader.bindUniform("ModelMatrix", m_modelTransform);
-	
-	//m_bunnyMesh.draw();
-
-#pragma endregion
-#pragma region SoulSpear
-
-	m_normalMapShader.bind();
-	m_modelTransform = m_spearTransform;
-
-	m_normalMapShader.bindUniform("AmbientColour", m_ambientLight);
-	m_normalMapShader.bindUniform("LightColour", m_light.colour);
-	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
-
-	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
-
-	pvm = projectionMatrix * viewMatrix * m_modelTransform;
-	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
-	m_normalMapShader.bindUniform("ModelMatrix", m_modelTransform);
-
-	//m_spearMesh.draw();
-
-#pragma endregion
-#pragma region Potion
-
-	m_normalMapShader.bind();
-	m_modelTransform = m_potionTransform;
-
-	m_normalMapShader.bindUniform("AmbientColour", m_ambientLight);
-	m_normalMapShader.bindUniform("LightColour", m_light.colour);
-	m_normalMapShader.bindUniform("LightDirection", m_light.direction);
-
-	m_normalMapShader.bindUniform("CameraPosition", m_camera.GetPosition());
-
-	pvm = projectionMatrix * viewMatrix * m_modelTransform;
-
-	m_normalMapShader.bindUniform("ProjectionViewModel", pvm);
-	m_normalMapShader.bindUniform("ModelMatrix", m_modelTransform);
-
-	m_potionMesh.draw();
-
-#pragma endregion
 #pragma region Quad
 
 	m_textureShader.bind();
@@ -224,19 +171,12 @@ void GraphicsApp::draw()
 #pragma endregion
 
 	// Draw the mesh
-	//m_quadMesh.Draw();
+	// m_quadMesh.Draw();
 	// m_boxMesh.Draw();
 	// m_pyramidMesh.Draw();
 	// m_gridMesh.Draw();
 
-	//// Bind the shader
-	//m_phongShader.bind();
-
-	//m_modelTransform = m_gridTransform;
-
-	//// Bind the transform
-	//pvm = projectionMatrix * viewMatrix * m_modelTransform;
-	//m_phongShader.bindUniform("ProjectionViewModel", pvm);
+	m_scene->Draw();
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
 }
@@ -394,6 +334,9 @@ bool GraphicsApp::LaunchShaders()
 	//LoadBoxMesh();
 	//LoadPyramidMesh();
 	//LoadGridMesh();
+
+	for (int i = 0; i < 10; i++)
+		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_spearMesh, &m_normalMapShader));
 
 	return true;
 }

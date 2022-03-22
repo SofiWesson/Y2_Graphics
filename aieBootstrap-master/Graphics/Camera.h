@@ -46,9 +46,9 @@ private:
 	glm::vec3 m_scale;	  // local
 
 	glm::mat4 m_localTransform {
-		1, 0, 0, 0, // 0
-		0, 1, 0, 0,	// 1
-		0, 0, 1, 0, // 2
+		0, 0, 0, 0, // 0
+		0, 0, 0, 0,	// 1
+		0, 0, 0, 0, // 2
 		0, 0, 0, 1  // 3
 	};//x  y  z  w
 
