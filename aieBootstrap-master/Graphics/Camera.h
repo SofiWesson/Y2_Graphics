@@ -1,6 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
+#include "Input.h"
 
 class Camera
 {
@@ -16,6 +17,7 @@ public:
 	~Camera() {}
 
 	virtual void update(float a_dt);
+	void MoveCamera(aie::Input* a_input, float a_dt);
 	void setPerspective(float a_fieldOfView, float a_aspectRatio, float a_near, float a_far);
 	void setLookAt(glm::vec3 a_from, glm::vec3 a_to, glm::vec3 a_up);
 	void setPosition(glm::vec3 a_position);
@@ -41,6 +43,9 @@ private:
 	float m_theta; // z rotation
 	float m_phi; // x rotation
 
+	float m_lastMouseX = 0.f;
+	float m_lastMouseY = 0.f;
+
 	glm::vec3 m_position; // local
 	glm::vec3 m_rotation; // local
 	glm::vec3 m_scale;	  // local
@@ -62,8 +67,6 @@ public:
 		m_theta = 0;
 		m_phi = 0;
 		m_position = glm::vec3(-10, 2, 0);
-		m_lastMouseX = 0;
-		m_lastMouseY = 0;
 	}
 	virtual ~FlyCamera() {}
 
@@ -84,7 +87,4 @@ private:
 	glm::vec3 m_up;
 
 	float m_speed;
-
-	float m_lastMouseX;
-	float m_lastMouseY;
 };

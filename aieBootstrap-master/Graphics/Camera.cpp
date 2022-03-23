@@ -3,67 +3,13 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "Input.h"
+
 #include <Windows.h>
 
 #pragma region FlyCamera
 
 void FlyCamera::update(float a_dt)
 {
-	aie::Input* input = aie::Input::getInstance();
-	float thetaR = glm::radians(m_theta);
-	float phiR = glm::radians(m_phi);
-
-	// Calculate the forwards and right axis and up axis for the camera
-	glm::vec3 forward(cos(phiR) * cos(thetaR), sin(phiR), cos(phiR) * sin(thetaR));
-	glm::vec3 right(-sin(thetaR), 0, cos(thetaR));
-	glm::vec3 up(0, 1, 0);
-
-	// use WASD, ZX keys to move camera around
-	if (input->isKeyDown(aie::INPUT_KEY_W))
-		m_position += forward * a_dt;
-	if (input->isKeyDown(aie::INPUT_KEY_S))
-		m_position -= forward * a_dt;
-	if (input->isKeyDown(aie::INPUT_KEY_A))
-		m_position -= right * a_dt;
-	if (input->isKeyDown(aie::INPUT_KEY_D))
-		m_position += right * a_dt;
-
-	if (input->isKeyDown(aie::INPUT_KEY_X))
-		m_position += up * a_dt;
-	if (input->isKeyDown(aie::INPUT_KEY_Z))
-		m_position -= up * a_dt;
-
-	// get current mouse coordinates
-	float mx = input->getMouseX();
-	float my = input->getMouseY();
-	const float turnSpeed = .1f;
-
-	// if the right button us down, increment theta and phi
-	if (input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
-	{
-		m_theta += turnSpeed * (mx - m_lastMouseX);
-		m_phi += turnSpeed * (my - m_lastMouseY);
-	}
-
-	/*int screenX, screenY;
-	int width, height;
-	int x, y;
-	
-	RECT rect = { NULL };
-	if (GetWindowRect(GetConsoleWindow(), &rect))
-	{
-		screenX = rect.left;
-		screenY = rect.top;
-	
-		width = rect.right - rect.left;
-		height = rect.bottom - rect.top;
-	
-		x = screenX + width / 2;
-		y = screenY + height / 2;
-	}*/
-
-	m_lastMouseX = mx;
-	m_lastMouseY = my;
 }
 
 glm::mat4 FlyCamera::getView()
@@ -84,6 +30,50 @@ glm::mat4 FlyCamera::getProjection(float w, float h)
 
 void Camera::update(float a_dt)
 {
+	aie::Input* input = aie::Input::getInstance();
+
+	MoveCamera(input, a_dt);
+}
+
+void Camera::MoveCamera(aie::Input* a_input, float a_dt)
+{
+	float thetaR = glm::radians(m_theta);
+	float phiR = glm::radians(m_phi);
+
+	// Calculate the forwards and right axis and up axis for the camera
+	glm::vec3 forward(cos(phiR) * cos(thetaR), sin(phiR), cos(phiR) * sin(thetaR));
+	glm::vec3 right(-sin(thetaR), 0, cos(thetaR));
+	glm::vec3 up(0, 1, 0);
+
+	// use WASD, ZX keys to move camera around
+	if (a_input->isKeyDown(aie::INPUT_KEY_W))
+		m_position += forward * a_dt;
+	if (a_input->isKeyDown(aie::INPUT_KEY_S))
+		m_position -= forward * a_dt;
+	if (a_input->isKeyDown(aie::INPUT_KEY_A))
+		m_position -= right * a_dt;
+	if (a_input->isKeyDown(aie::INPUT_KEY_D))
+		m_position += right * a_dt;
+
+	if (a_input->isKeyDown(aie::INPUT_KEY_X))
+		m_position += up * a_dt;
+	if (a_input->isKeyDown(aie::INPUT_KEY_Z))
+		m_position -= up * a_dt;
+
+	// get current mouse coordinates
+	float mx = a_input->getMouseX();
+	float my = a_input->getMouseY();
+	const float turnSpeed = .1f;
+
+	// if the right button us down, increment theta and phi
+	if (a_input->isMouseButtonDown(aie::INPUT_MOUSE_BUTTON_RIGHT))
+	{
+		m_theta += turnSpeed * (mx - m_lastMouseX);
+		m_phi += turnSpeed * (my - m_lastMouseY);
+	}
+
+	m_lastMouseX = mx;
+	m_lastMouseY = my;
 }
 
 void Camera::setPerspective(float a_fieldOfView, float a_aspectRatio, float a_near, float a_far)
@@ -134,8 +124,8 @@ void Camera::setRotation(glm::vec3 a_rotation)
 
 	m_localTransform[0].x = cosZ - GetScale().x;
 	m_localTransform[0].y = -sinZ;
-	m_localTransform[2].x = sinZ;
-	m_localTransform[2].y = cosZ;
+	m_localTransform[1].x = sinZ;
+	m_localTransform[1].y = cosZ - GetScale().y;
 
 #pragma endregion
 
@@ -174,6 +164,7 @@ glm::vec3 Camera::GetRotation()
 	
 	glm::vec3 scale = GetScale();
 
+	// extract rotation into separate matrix from transform matrix
 	tempMat[0].x = m_localTransform[0].x / scale.x; // 0x
 	tempMat[0].y = m_localTransform[0].y / scale.y; // 0y
 	tempMat[0].z = m_localTransform[0].z / scale.z; // 0z
@@ -195,36 +186,37 @@ glm::vec3 Camera::GetRotation()
 	{
 		float s = glm::sqrt(trace + 1.f) * 2.f;
 		q.w = .25f * s;
-		q.x = (m_localTransform[2].y - m_localTransform[1].z) / s;
-		q.y = (m_localTransform[0].z - m_localTransform[2].x) / s;
-		q.z = (m_localTransform[1].x - m_localTransform[0].y) / s;
+		q.x = (tempMat[2].y - tempMat[1].z) / s;
+		q.y = (tempMat[0].z - tempMat[2].x) / s;
+		q.z = (tempMat[1].x - tempMat[0].y) / s;
 	}
-	else if (m_localTransform[0].x > m_localTransform[1].y && m_localTransform[0].x > m_localTransform[2].z)
+	else if (tempMat[0].x > tempMat[1].y && tempMat[0].x > tempMat[2].z)
 	{
-		float s = glm::sqrt(1.f + m_localTransform[0].x - m_localTransform[1].y - m_localTransform[2].z) * 2;
-		q.w = (m_localTransform[2].y - m_localTransform[1].z) / s;
+		float s = glm::sqrt(1.f + tempMat[0].x - tempMat[1].y - tempMat[2].z) * 2;
+		q.w = (tempMat[2].y - tempMat[1].z) / s;
 		q.x = .25f * s;
-		q.y = (m_localTransform[0].y + m_localTransform[1].x) / s;
-		q.z = (m_localTransform[0].z + m_localTransform[2].x) / s;
+		q.y = (tempMat[0].y + tempMat[1].x) / s;
+		q.z = (tempMat[0].z + tempMat[2].x) / s;
 	}
-	else if (m_localTransform[1].y > m_localTransform[2].z)
+	else if (tempMat[1].y > tempMat[2].z)
 	{
-		float s = glm::sqrt(1.f + m_localTransform[1].y - m_localTransform[0].x - m_localTransform[2].z) * 2;
-		q.w = (m_localTransform[0].z - m_localTransform[2].x) / s;
-		q.x = (m_localTransform[0].y + m_localTransform[1].x) / s;
+		float s = glm::sqrt(1.f + tempMat[1].y - tempMat[0].x - tempMat[2].z) * 2;
+		q.w = (tempMat[0].z - tempMat[2].x) / s;
+		q.x = (tempMat[0].y + tempMat[1].x) / s;
 		q.y = .25f * s;
-		q.z = (m_localTransform[1].z + m_localTransform[2].y) / s;
+		q.z = (tempMat[1].z + tempMat[2].y) / s;
 	}
 	else
 	{
-		float s = sqrt(1.f + m_localTransform[2].z - m_localTransform[0].x - m_localTransform[1].y) * 2;
-		q.w = (m_localTransform[1].x - m_localTransform[0].y) / s;
-		q.x = (m_localTransform[0].z + m_localTransform[2].x) / s;
-		q.y = (m_localTransform[1].z + m_localTransform[2].y) / s;
+		float s = sqrt(1.f + tempMat[2].z - tempMat[0].x - tempMat[1].y) * 2;
+		q.w = (tempMat[1].x - tempMat[0].y) / s;
+		q.x = (tempMat[0].z + tempMat[2].x) / s;
+		q.y = (tempMat[1].z + tempMat[2].y) / s;
 		q.z = .25f * s;
 	}
 
-	// quaternions to rotations
+	// quaternion to angle
+	// confusing leave for later
 
 	return m_rotation;
 }

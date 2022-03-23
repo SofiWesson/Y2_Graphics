@@ -92,12 +92,12 @@ void GraphicsApp::update(float deltaTime) {
 
 	aie::Input* input = aie::Input::getInstance();
 
-	if (input->isKeyDown(aie::INPUT_KEY_1) && !input->isKeyUp(aie::INPUT_KEY_1))
+	/*if (input->isKeyDown(aie::INPUT_KEY_1) && !input->isKeyUp(aie::INPUT_KEY_1))
 		m_camera.setPosition(m_camera.GetPosition() + glm::vec3(.01f, .01f, .01f));
 	if (input->isKeyDown(aie::INPUT_KEY_2) && !input->isKeyUp(aie::INPUT_KEY_2))
 		m_camera.setRotation(m_camera.GetRotation() + glm::vec3(.01f, .01f, .01f));
 	if (input->isKeyDown(aie::INPUT_KEY_3) && !input->isKeyUp(aie::INPUT_KEY_3))
-		m_camera.setScale(m_camera.GetScale() + glm::vec3(.01f, .01f, .01f));
+		m_camera.setScale(m_camera.GetScale() + glm::vec3(.01f, .01f, .01f));*/
 
 #pragma region RotateBunny
 
@@ -145,7 +145,7 @@ void GraphicsApp::update(float deltaTime) {
 void GraphicsApp::draw()
 {
 	// We need to bind our render target first
-	m_renderTarget.bind();
+	//m_renderTarget.bind();
 
 	// wipe the screen to the background colour
 	clearScreen();
@@ -162,9 +162,9 @@ void GraphicsApp::draw()
 	m_scene->Draw();
 
 	// Unbind the target to return it to the back buffer
-	m_renderTarget.unbind();
+	//m_renderTarget.unbind();
 
-	clearScreen();
+	//clearScreen();
 
 #pragma region Quad
 
@@ -176,9 +176,9 @@ void GraphicsApp::draw()
 	m_textureShader.bindUniform("ProjectionViewModel", pvm);
 	m_textureShader.bindUniform("diffuseTexture", 0);
 
-	m_renderTarget.getTarget(0).bind(0);
+	//m_renderTarget.getTarget(0).bind(0);
 
-	//m_gridTexture.bind(0);
+	m_gridTexture.bind(0);
 	m_quadMesh.Draw();
 
 #pragma endregion
@@ -187,7 +187,7 @@ void GraphicsApp::draw()
 	// m_quadMesh.Draw();
 	// m_boxMesh.Draw();
 	// m_pyramidMesh.Draw();
-	// m_gridMesh.Draw();
+	m_gridMesh.Draw();
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
 }
@@ -349,7 +349,7 @@ bool GraphicsApp::LaunchShaders()
 	//LoadQuadMesh();
 	//LoadBoxMesh();
 	//LoadPyramidMesh();
-	//LoadGridMesh();
+	LoadGridMesh();
 
 	for (int i = 0; i < 10; i++)
 		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_spearMesh, &m_normalMapShader));
@@ -444,8 +444,8 @@ void GraphicsApp::LoadPyramidMesh()
 
 void GraphicsApp::LoadGridMesh()
 {
-	const int numVertices = 44;
-	const int numIndices = 66;
+	const int numVertices = 88;
+	const int numIndices = 132;
 
 	float posOffset = 0.0f;
 	int indicesCount = 0;
@@ -453,22 +453,40 @@ void GraphicsApp::LoadGridMesh()
 	Mesh::Vertex vertices[numVertices];
 	unsigned int indices[numIndices];
 
-	for (int i = 0; i < 44;)
+	for (int i = 0; i < 11; i++)
 	{
-		vertices[i].position =     { -0.5f,	.01,	  0.5f - posOffset, 1 }; // bottom left
-		vertices[i + 1].position = {  0.5f,	.01,      0.5f - posOffset, 1 }; // bottom front
-		vertices[i + 2].position = { -0.5f, .01,    0.498f - posOffset, 1 }; // bottom back
-		vertices[i + 3].position = {  0.5f,	.01,	0.498f - posOffset, 1 }; // bottom right
+		vertices[i * 4].position =     { -0.5f,	.01,	  0.5f - posOffset, 1 }; // bottom left
+		vertices[i * 4 + 1].position = {  0.5f,	.01,      0.5f - posOffset, 1 }; // bottom front
+		vertices[i * 4 + 2].position = { -0.5f, .01,    0.498f - posOffset, 1 }; // bottom back
+		vertices[i * 4 + 3].position = {  0.5f,	.01,	0.498f - posOffset, 1 }; // bottom right
 
-		indices[indicesCount]     =     i;
-		indices[indicesCount + 1] = i + 1;
-		indices[indicesCount + 2] = i + 2;
+		indices[indicesCount]     =     i * 4;
+		indices[indicesCount + 1] = i * 4 + 1;
+		indices[indicesCount + 2] = i * 4 + 2;
 
-		indices[indicesCount + 3] = i + 2;
-		indices[indicesCount + 4] = i + 1;
-		indices[indicesCount + 5] = i + 3;
+		indices[indicesCount + 3] = i * 4 + 2;
+		indices[indicesCount + 4] = i * 4 + 1;
+		indices[indicesCount + 5] = i * 4 + 3;
 
-		i += 4;
+		indicesCount += 6;
+		posOffset += 0.1f;
+	}
+
+	for (int i = 0; i < 11; i++) // crashes
+	{
+		vertices[(numVertices / 2) + i * 4].position     = {   0.5f - posOffset,  .01,  -0.5f, 1 }; // bottom left
+		vertices[(numVertices / 2) + i * 4 + 1].position = {   0.5f - posOffset,  .01,   0.5f, 1 }; // bottom front
+		vertices[(numVertices / 2) + i * 4 + 2].position = { 0.498f - posOffset,  .01,  -0.5f, 1 }; // bottom back
+		vertices[(numVertices / 2) + i * 4 + 3].position = { 0.498f - posOffset,  .01,   0.5f, 1 }; // bottom right
+	
+		indices[indicesCount] = i * 4 + (numVertices / 2);
+		indices[indicesCount + 1] = i * 4 + 1 + (numVertices / 2);
+		indices[indicesCount + 2] = i * 4 + 2 + (numVertices / 2);
+	
+		indices[indicesCount + 3] = i * 4 + 2 + (numVertices / 2);
+		indices[indicesCount + 4] = i * 4 + 1 + (numVertices / 2);
+		indices[indicesCount + 5] = i * 4 + 3 + (numVertices / 2);
+	
 		indicesCount += 6;
 		posOffset += 0.1f;
 	}
