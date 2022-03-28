@@ -48,6 +48,9 @@ bool GraphicsApp::startup() {
 
 	// m_solarSystem = new SolarSystem();
 
+	m_basicMeshes.clear();
+	m_basicMeshTransforms.clear();
+
 	return LaunchShaders();
 }
 
@@ -57,7 +60,9 @@ void GraphicsApp::shutdown()
 	delete m_scene;
 }
 
-void GraphicsApp::update(float deltaTime) {
+void GraphicsApp::update(float deltaTime)
+{
+	m_dt = deltaTime;
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
@@ -145,13 +150,12 @@ void GraphicsApp::update(float deltaTime) {
 void GraphicsApp::draw()
 {
 	// We need to bind our render target first
-	//m_renderTarget.bind();
+	m_renderTarget.bind();
 
 	// wipe the screen to the background colour
 	clearScreen();
 
 	// update perspective based on screen size
-	
 	glm::mat4 projectionMatrix = m_camera.getProjection((float)getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_camera.getView();
 	auto pvm = projectionMatrix * viewMatrix * glm::mat4(1);
@@ -161,12 +165,27 @@ void GraphicsApp::draw()
 
 	m_scene->Draw();
 
-	// Unbind the target to return it to the back buffer
-	//m_renderTarget.unbind();
+#pragma region Simple Shader on Basic Meshes
 
-	//clearScreen();
+	m_shader.bind();
+
+	for (int i = 0; i < m_basicMeshTransforms.size(); i++)
+	{
+		m_modelTransform = m_basicMeshTransforms[i];
+
+		pvm = projectionMatrix * viewMatrix * m_modelTransform;
+		m_shader.bindUniform("ProjectionViewModel", pvm);
+
+		m_basicMeshes[i].Draw();
+	}
+
+#pragma endregion
 
 #pragma region Quad
+
+	// Unbind the target to return it to the back buffer
+	//m_renderTarget.unbind();
+	//clearScreen();
 
 	m_textureShader.bind();
 
@@ -183,13 +202,27 @@ void GraphicsApp::draw()
 
 #pragma endregion
 
-	// Draw the mesh
-	// m_quadMesh.Draw();
-	// m_boxMesh.Draw();
-	// m_pyramidMesh.Draw();
-	m_gridMesh.Draw();
-
 	Gizmos::draw(projectionMatrix * viewMatrix);
+
+#pragma region Post-Processing Shader
+
+	// Unbind the target to return it to the back buffer
+	m_renderTarget.unbind();
+	clearScreen();
+
+	glm::vec2 windowSize = glm::vec2(getWindowWidth(), getWindowHeight());
+
+	// bind the post-processing shader and texture
+	m_postShader.bind();
+	m_postShader.bindUniform("colourTarget", 0);
+	m_postShader.bindUniform("postProcessTarget", (int)m_postProcessingEffect);
+	m_postShader.bindUniform("screenSize", glm::vec2(getWindowWidth(), getWindowHeight()));
+	m_postShader.bindUniform("deltaTime", m_dt);
+	m_renderTarget.getTarget(0).bind(0);
+
+	m_screenQuad.Draw();
+
+#pragma endregion
 }
 
 glm::mat4 GraphicsApp::RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radian)
@@ -284,6 +317,16 @@ bool GraphicsApp::LaunchShaders()
 	}
 
 #pragma endregion
+#pragma region Post Processing Shader
+	m_postShader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/advancedPost.vert");
+	m_postShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/advancedPost.frag");
+	if (m_postShader.link() == false)
+	{
+		printf("Post-processing shader has had an Error: %s\n", m_postShader.getLastError());
+		return false;
+	}
+#pragma endregion
+
 #pragma region Textured Quad Mesh
 
 	if (m_gridTexture.load("./textures/numbered_grid.tga") == false)
@@ -346,6 +389,10 @@ bool GraphicsApp::LaunchShaders()
 
 #pragma endregion
 
+	// create the fullscreen quad for post processing effects
+	m_screenQuad.InitialiseFullscreenQuad();
+
+	// can only have one :(
 	//LoadQuadMesh();
 	//LoadBoxMesh();
 	//LoadPyramidMesh();
@@ -377,6 +424,9 @@ void GraphicsApp::LoadQuadMesh()
 		 0,	 0, 10,	0,
 		 0,	 0,  0,	1
 	}; // this is 10 units large
+
+	m_basicMeshes.push_back(m_quadMesh);
+	m_basicMeshTransforms.push_back(m_quadTransform);
 }
 
 void GraphicsApp::LoadBoxMesh()
@@ -411,6 +461,9 @@ void GraphicsApp::LoadBoxMesh()
 		 0,	 0, 5,	0,
 		 0,	 0,  0,	1
 	};
+
+	m_basicMeshes.push_back(m_boxMesh);
+	m_basicMeshTransforms.push_back(m_boxTransform);
 }
 
 void GraphicsApp::LoadPyramidMesh()
@@ -440,6 +493,9 @@ void GraphicsApp::LoadPyramidMesh()
 		0,	0,  5,	0,
 		0,	0,  0,	1
 	};
+
+	m_basicMeshes.push_back(m_pyramidMesh);
+	m_basicMeshTransforms.push_back(m_pyramidTransform);
 }
 
 void GraphicsApp::LoadGridMesh()
@@ -447,7 +503,6 @@ void GraphicsApp::LoadGridMesh()
 	const int numVertices = 88;
 	const int numIndices = 132;
 
-	float posOffset = 0.0f;
 	int indicesCount = 0;
 
 	Mesh::Vertex vertices[numVertices];
@@ -455,7 +510,9 @@ void GraphicsApp::LoadGridMesh()
 
 	for (int i = 0; i < 11; i++)
 	{
-		vertices[i * 4].position =     { -0.5f,	.01,	  0.5f - posOffset, 1 }; // bottom left
+		float posOffset = 0.0f;
+
+		vertices[i * 4].position     = { -0.5f,	.01,	  0.5f - posOffset, 1 }; // bottom left
 		vertices[i * 4 + 1].position = {  0.5f,	.01,      0.5f - posOffset, 1 }; // bottom front
 		vertices[i * 4 + 2].position = { -0.5f, .01,    0.498f - posOffset, 1 }; // bottom back
 		vertices[i * 4 + 3].position = {  0.5f,	.01,	0.498f - posOffset, 1 }; // bottom right
@@ -472,8 +529,10 @@ void GraphicsApp::LoadGridMesh()
 		posOffset += 0.1f;
 	}
 
-	for (int i = 0; i < 11; i++) // crashes
+	for (int i = 0; i < 11; i++)
 	{
+		float posOffset = 0.0f;
+
 		vertices[(numVertices / 2) + i * 4].position     = {   0.5f - posOffset,  .01,  -0.5f, 1 }; // bottom left
 		vertices[(numVertices / 2) + i * 4 + 1].position = {   0.5f - posOffset,  .01,   0.5f, 1 }; // bottom front
 		vertices[(numVertices / 2) + i * 4 + 2].position = { 0.498f - posOffset,  .01,  -0.5f, 1 }; // bottom back
@@ -498,4 +557,7 @@ void GraphicsApp::LoadGridMesh()
 		 0,	 0, 10,	0,
 		 0,	 0,  0,	1
 	}; // this is 10 units large
+
+	m_basicMeshes.push_back(m_gridMesh);
+	m_basicMeshTransforms.push_back(m_gridTransform);
 }

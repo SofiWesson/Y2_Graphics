@@ -13,6 +13,7 @@
 
 #include <glm/mat4x4.hpp>
 #include <Input.h>
+#include <vector>
 
 class Application;
 class Camera;
@@ -20,6 +21,22 @@ class FlyCamera;
 class SolarSystem;
 class Planet;
 class Scene;
+
+enum class PostProcessEffects
+{
+	DEFAULT = 0,
+	BOX_BLUR,
+	DISTORT,
+	EDGE_DETECTION,
+	SEPIA,
+	SCANLINES,
+	GRAY_SCALE,
+	INVERT,
+	PIXELIZER,
+	POSTERIZATION,
+	DISTANCE_FOG,
+	DEPTH_OF_FIELD
+};
 
 class GraphicsApp : public aie::Application {
 public:
@@ -52,10 +69,18 @@ protected:
 	aie::ShaderProgram m_phongShader;
 	aie::ShaderProgram m_textureShader;
 	aie::ShaderProgram m_normalMapShader;
+	aie::ShaderProgram m_postShader;
 
 	aie::RenderTarget m_renderTarget;
-
+	
+	// for post-processing
+	Mesh m_screenQuad;
+	PostProcessEffects m_postProcessingEffect = PostProcessEffects::POSTERIZATION;
 	glm::mat4 m_modelTransform;
+
+	// list of basic meshes
+	std::vector<Mesh> m_basicMeshes;
+	std::vector<glm::mat4> m_basicMeshTransforms;
 
 	// Generic quad data
 	Mesh m_quadMesh;
@@ -97,4 +122,6 @@ protected:
 	glm::vec3 m_ambientLight;
 
 	Scene* m_scene;
+
+	float m_dt = 0.f;
 };
