@@ -103,6 +103,23 @@ void GraphicsApp::update(float deltaTime)
 
 	m_camera->update(deltaTime);
 
+	glm::vec2 windowSize((float)getWindowWidth(), (float)getWindowHeight());
+
+	if (windowSize.x != m_windowSizeLastFrame.x || windowSize.y != m_windowSizeLastFrame.y)
+	{
+		float fullscreenQuadVertices[12] = {
+			-1,  1, // left top
+			-1, -1, // left bottom
+			 1,  1, // rigtht top
+
+			-1, -1, // left bottom
+			 1, -1, // right bottom
+			 1,  1  // right top
+		};
+
+		// m_screenQuad.SetFullscreenQuadVertices(fullscreenQuadVertices);
+	}
+
 	m_particleEmitter->Update(deltaTime, m_camera->GetTransform(m_camera->GetPosition(), glm::vec3(0), glm::vec3(1)));
 
 	aie::Input* input = aie::Input::getInstance();
@@ -155,6 +172,7 @@ void GraphicsApp::update(float deltaTime)
 
 #pragma endregion
 
+	m_windowSizeLastFrame = glm::vec2((float)getWindowWidth(), (float)getWindowHeight());
 }
 
 void GraphicsApp::draw()

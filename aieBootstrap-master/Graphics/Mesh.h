@@ -20,10 +20,23 @@ public:
 	
 	virtual void Draw();
 
+	void SetFullscreenQuadVertices(float a_fullscreenQuadVertices[12]) { m_fullscreenQuadVertices[12] = a_fullscreenQuadVertices[12]; }
+	float* GetFullscreenQuadVertices() { return m_fullscreenQuadVertices; }
+
 protected:
 	unsigned int m_triCount
 				, m_vao		// Vertex array object
 				, m_vbo		// Vertex buffer object
 				, m_ibo;	// Index buffer object
 
+	// define the quad's vertices
+	float m_fullscreenQuadVertices[12] = {
+		-1,  1, // left top
+		-1, -1, // left bottom
+		 1,  1, // rigtht top
+
+		-1, -1, // left bottom
+		 1, -1, // right bottom
+		 1,  1  // right top
+	};
 };

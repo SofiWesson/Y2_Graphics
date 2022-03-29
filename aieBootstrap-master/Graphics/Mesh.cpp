@@ -87,19 +87,8 @@ void Mesh::InitialiseFullscreenQuad()
 	// then bind the vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-	// define the quad's vertices
-	float vertices[] = {
-		-1,  1, // left top
-		-1, -1, // left bottom
-		 1,  1, // rigtht top
-
-		-1, -1, // left bottom
-		 1, -1, // right bottom
-		 1,  1  // right top
-	};
-
 	// then we fill out vertex buffer
-	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(float), m_fullscreenQuadVertices, GL_STATIC_DRAW);
 
 	// now we enable the first element at the position
 	glEnableVertexAttribArray(0);
@@ -118,7 +107,6 @@ void Mesh::Initialise(unsigned int a_vertexCount, const Vertex* a_vertices, unsi
 	// Check if the mesh is not initialised already
 
 	assert(m_vao == 0);
-
 
 	// Generate buffers
 	glGenBuffers(1, &m_vbo);

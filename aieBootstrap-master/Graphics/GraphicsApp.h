@@ -53,6 +53,8 @@ public:
 
 	glm::mat4 RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radian);
 
+	glm::vec2 m_windowSizeLastFrame = glm::vec2(0.f, 0.f);
+
 protected:
 
 	bool LaunchShaders();
@@ -76,7 +78,7 @@ protected:
 	
 	// for post-processing
 	Mesh m_screenQuad;
-	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DEFAULT;
+	PostProcessEffects m_postProcessingEffect = PostProcessEffects::EDGE_DETECTION;
 	glm::mat4 m_modelTransform;
 
 	// list of basic meshes
