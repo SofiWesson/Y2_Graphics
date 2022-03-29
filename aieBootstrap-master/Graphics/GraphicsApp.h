@@ -10,6 +10,7 @@
 #include "Instance.h"
 #include "Scene.h"
 #include "RenderTarget.h"
+#include "ParticleEmitter.h"
 
 #include <glm/mat4x4.hpp>
 #include <Input.h>
@@ -75,7 +76,7 @@ protected:
 	
 	// for post-processing
 	Mesh m_screenQuad;
-	PostProcessEffects m_postProcessingEffect = PostProcessEffects::POSTERIZATION;
+	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DEFAULT;
 	glm::mat4 m_modelTransform;
 
 	// list of basic meshes
@@ -114,7 +115,7 @@ protected:
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
 
-	Camera m_camera;
+	Camera* m_camera = nullptr;
 	FlyCamera m_flyCamera;
 
 	SolarSystem* m_solarSystem = nullptr;
@@ -122,6 +123,13 @@ protected:
 	glm::vec3 m_ambientLight;
 
 	Scene* m_scene;
+
+	ParticleEmitter* m_particleEmitter;
+	aie::ShaderProgram m_particleShader;
+	glm::mat4 m_particleTransform;
+
+	void InitialiseOurParticles();
+	void DrawOurParticles(glm::mat4 a_pvm);
 
 	float m_dt = 0.f;
 };

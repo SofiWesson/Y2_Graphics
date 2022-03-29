@@ -28,6 +28,8 @@ public:
 		aie::ShaderProgram* a_shader
 	);
 
+	glm::mat4 GetTransform() { return m_transform; }
+
 	void Draw(Scene* a_scene);
 
 	static glm::mat4 MakeTransform(

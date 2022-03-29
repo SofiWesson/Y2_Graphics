@@ -28,6 +28,29 @@ glm::mat4 FlyCamera::getProjection(float w, float h)
 #pragma endregion
 #pragma region Camera
 
+Camera::Camera()
+{
+}
+
+Camera::~Camera()
+{
+}
+
+bool Camera::startup()
+{
+	m_theta = 0;
+	m_phi = 0;
+	setPosition(glm::vec3(-10, 2, 0));
+	setRotation(glm::vec3(0, 0, 0));
+	setScale(glm::vec3(1, 1, 1));
+
+	return true;
+}
+
+void Camera::shutdown()
+{
+}
+
 void Camera::update(float a_dt)
 {
 	aie::Input* input = aie::Input::getInstance();
@@ -149,7 +172,7 @@ glm::vec3 Camera::GetPosition()
 	temp.y = m_localTransform[1].w;
 	temp.z = m_localTransform[2].w;
 
-	return temp;
+	return m_position;
 }
 
 glm::vec3 Camera::GetRotation()
@@ -233,7 +256,16 @@ glm::vec3 Camera::GetScale()
 	temp.y = glm::length(y);
 	temp.z = glm::length(z);
 
-	return temp;
+	return m_scale;
+}
+
+glm::mat4 Camera::GetTransform(glm::vec3 a_position, glm::vec3 a_eulerAngles, glm::vec3 a_scale)
+{
+	return glm::translate(glm::mat4(1), a_position)
+		* glm::rotate(glm::mat4(1), glm::radians(a_eulerAngles.z), glm::vec3(0, 0, 1))
+		* glm::rotate(glm::mat4(1), glm::radians(a_eulerAngles.y), glm::vec3(0, 1, 0))
+		* glm::rotate(glm::mat4(1), glm::radians(a_eulerAngles.x), glm::vec3(1, 0, 0))
+		* glm::scale(glm::mat4(1), a_scale);
 }
 
 glm::mat4 Camera::getWorldTransform()

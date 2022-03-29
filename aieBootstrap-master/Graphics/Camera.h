@@ -6,15 +6,11 @@
 class Camera
 {
 public:
-	Camera()
-	{
-		m_theta = 0;
-		m_phi = 0;
-		setPosition(glm::vec3(-10, 2, 0));
-		setRotation(glm::vec3(0, 0, 0));
-		setScale(glm::vec3(1, 1, 1));
-	}
-	~Camera() {}
+	Camera();
+	virtual ~Camera();
+
+	virtual bool startup();
+	virtual void shutdown();
 
 	virtual void update(float a_dt);
 	void MoveCamera(aie::Input* a_input, float a_dt);
@@ -26,6 +22,7 @@ public:
 	glm::vec3 GetPosition();
 	glm::vec3 GetRotation();
 	glm::vec3 GetScale();
+	glm::mat4 GetTransform(glm::vec3 a_position, glm::vec3 a_eulerAngles, glm::vec3 a_scale);
 	glm::mat4 getLocalTransform() { return m_localTransform; }
 	glm::mat4 getWorldTransform();
 	glm::mat4 getView();

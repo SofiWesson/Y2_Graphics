@@ -10,6 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <iostream>
+#include <list>
+#include <vector>
 
 using glm::vec3;
 using glm::vec4;
@@ -41,7 +43,10 @@ bool GraphicsApp::startup() {
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f, 16.0f / 9.0f, 0.1f, 1000.0f);
 
-	m_scene = new Scene(&m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), light, m_ambientLight);
+	m_camera = new Camera();
+	m_camera->startup();
+
+	m_scene = new Scene(m_camera, glm::vec2(getWindowWidth(), getWindowHeight()), light, m_ambientLight);
 
 	m_scene->AddPointLights(glm::vec3(5, 3, 0), glm::vec3(1, 0, 0), 50);
 	m_scene->AddPointLights(glm::vec3(-5, 3, 0), glm::vec3(0, 0, 1), 50);
@@ -51,6 +56,8 @@ bool GraphicsApp::startup() {
 	m_basicMeshes.clear();
 	m_basicMeshTransforms.clear();
 
+	InitialiseOurParticles();
+
 	return LaunchShaders();
 }
 
@@ -58,6 +65,7 @@ void GraphicsApp::shutdown()
 {
 	Gizmos::destroy();
 	delete m_scene;
+	delete m_camera;
 }
 
 void GraphicsApp::update(float deltaTime)
@@ -93,7 +101,9 @@ void GraphicsApp::update(float deltaTime)
 	if (m_solarSystem != nullptr)
 		m_solarSystem->Update(deltaTime);
 
-	m_camera.update(deltaTime);
+	m_camera->update(deltaTime);
+
+	m_particleEmitter->Update(deltaTime, m_camera->GetTransform(m_camera->GetPosition(), glm::vec3(0), glm::vec3(1)));
 
 	aie::Input* input = aie::Input::getInstance();
 
@@ -138,9 +148,9 @@ void GraphicsApp::update(float deltaTime)
 #pragma region ImGUI Local Transform
 
 	ImGui::Begin("Local Transform");
-	ImGui::DragFloat3("Position", &m_camera.GetPosition()[0], 0.1f, -1.0f, 1.0f);
-	ImGui::DragFloat3("Rotation", &m_camera.GetRotation()[0], 0.1f, -1.0f, 1.0f);
-	ImGui::DragFloat3("Scale", &m_camera.GetScale()[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Position", &m_camera->GetPosition()[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Rotation", &m_camera->GetRotation()[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Scale", &m_camera->GetScale()[0], 0.1f, -1.0f, 1.0f);
 	ImGui::End();
 
 #pragma endregion
@@ -156,14 +166,17 @@ void GraphicsApp::draw()
 	clearScreen();
 
 	// update perspective based on screen size
-	glm::mat4 projectionMatrix = m_camera.getProjection((float)getWindowWidth(), (float)getWindowHeight());
-	glm::mat4 viewMatrix = m_camera.getView();
+	glm::mat4 projectionMatrix = m_camera->getProjection((float)getWindowWidth(), (float)getWindowHeight());
+	glm::mat4 viewMatrix = m_camera->getView();
 	auto pvm = projectionMatrix * viewMatrix * glm::mat4(1);
 
 	if (m_solarSystem != nullptr)
 		m_solarSystem->Draw(projectionMatrix * viewMatrix);
 
 	m_scene->Draw();
+
+	pvm = projectionMatrix * viewMatrix * m_particleTransform;
+	DrawOurParticles(pvm);
 
 #pragma region Simple Shader on Basic Meshes
 
@@ -218,6 +231,7 @@ void GraphicsApp::draw()
 	m_postShader.bindUniform("postProcessTarget", (int)m_postProcessingEffect);
 	m_postShader.bindUniform("screenSize", glm::vec2(getWindowWidth(), getWindowHeight()));
 	m_postShader.bindUniform("deltaTime", m_dt);
+
 	m_renderTarget.getTarget(0).bind(0);
 
 	m_screenQuad.Draw();
@@ -326,6 +340,24 @@ bool GraphicsApp::LaunchShaders()
 		return false;
 	}
 #pragma endregion
+#pragma region Particle Shader
+
+	m_particleShader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/particle.vert");
+	m_particleShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/particle.frag");
+	if (m_particleShader.link() == false)
+	{
+		printf("Particle Shader has had an Error: %s\n", m_particleShader.getLastError());
+		return false;
+	}
+	m_particleTransform = {
+		.5f,  0,	0,	0,
+		 0, .5f,	0,	0,
+		 0,	 0, .5f,	0,
+		 0,	 0,  0,	1
+	};
+
+#pragma endregion
+
 
 #pragma region Textured Quad Mesh
 
@@ -560,4 +592,18 @@ void GraphicsApp::LoadGridMesh()
 
 	m_basicMeshes.push_back(m_gridMesh);
 	m_basicMeshTransforms.push_back(m_gridTransform);
+}
+
+void GraphicsApp::InitialiseOurParticles()
+{
+	m_particleEmitter = new ParticleEmitter();
+	m_particleEmitter->Initialise(1000, 500, .1f, 1.f, 1.f, 10.f, 2.f, .1f,
+		glm::vec4(0, 1, 1, 1), glm::vec4(1, 1, 0, 1));
+}
+
+void GraphicsApp::DrawOurParticles(glm::mat4 a_pvm)
+{
+	m_particleShader.bind();
+	m_particleShader.bindUniform("ProjectionViewModel", a_pvm);
+	m_particleEmitter->Draw();
 }
