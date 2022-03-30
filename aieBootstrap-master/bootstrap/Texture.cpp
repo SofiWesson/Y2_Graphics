@@ -43,7 +43,7 @@ Texture::~Texture() {
 		stbi_image_free(m_loadedPixels);
 }
 
-bool Texture::load(const char* filename) {
+bool Texture::load(const char* filename, bool nearest) {
 
 	if (m_glHandle != 0) {
 		glDeleteTextures(1, &m_glHandle);
@@ -82,8 +82,18 @@ bool Texture::load(const char* filename) {
 			break;
 		default:	break;
 		};
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		// Edited 30/02/22 ================================================
+		if (!nearest)
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		}
+		else
+		{
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		}
+		// ================================================================
 		glGenerateMipmap(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		m_width = (unsigned int)x;

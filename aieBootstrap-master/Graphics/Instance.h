@@ -29,6 +29,7 @@ public:
 	);
 
 	glm::mat4 GetTransform() { return m_transform; }
+	void SetTransform(glm::mat4 a_transform) { m_transform = a_transform; }
 
 	void Draw(Scene* a_scene);
 

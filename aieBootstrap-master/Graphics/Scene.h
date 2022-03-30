@@ -58,4 +58,3 @@ protected:
 	glm::vec3 m_pointLightPositions[MAX_LIGHTS];
 	glm::vec3 m_pointLightColours[MAX_LIGHTS];
 };
-

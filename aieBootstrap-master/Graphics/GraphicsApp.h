@@ -78,7 +78,7 @@ protected:
 	
 	// for post-processing
 	Mesh m_screenQuad;
-	PostProcessEffects m_postProcessingEffect = PostProcessEffects::EDGE_DETECTION;
+	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DEFAULT;
 	glm::mat4 m_modelTransform;
 
 	// list of basic meshes
@@ -133,5 +133,13 @@ protected:
 	void InitialiseOurParticles();
 	void DrawOurParticles(glm::mat4 a_pvm);
 
+	aie::Texture m_marbleTexture;
+	aie::Texture m_hatchingTexture;
+	aie::Texture m_rampTexture;
+
 	float m_dt = 0.f;
+
+	glm::vec3 _position;
+	glm::vec3 _eulerAngles;
+	glm::vec3 _scale;
 };

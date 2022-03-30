@@ -37,7 +37,12 @@ bool GraphicsApp::startup() {
 	Light light;
 	light.colour = { 1, 1, 1 };
 	light.direction = { 1, -1, 1 };
-	m_ambientLight = { 1, 1, 1 };
+	m_ambientLight = { .5f, .5f, .5f };
+
+	_position = { 0, 0, 0 };
+	_eulerAngles = { 0, 0, 0 };
+	_scale = { 1,1,1 };
+
 
 	// create simple camera transforms
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
@@ -105,21 +110,6 @@ void GraphicsApp::update(float deltaTime)
 
 	glm::vec2 windowSize((float)getWindowWidth(), (float)getWindowHeight());
 
-	if (windowSize.x != m_windowSizeLastFrame.x || windowSize.y != m_windowSizeLastFrame.y)
-	{
-		float fullscreenQuadVertices[12] = {
-			-1,  1, // left top
-			-1, -1, // left bottom
-			 1,  1, // rigtht top
-
-			-1, -1, // left bottom
-			 1, -1, // right bottom
-			 1,  1  // right top
-		};
-
-		// m_screenQuad.SetFullscreenQuadVertices(fullscreenQuadVertices);
-	}
-
 	m_particleEmitter->Update(deltaTime, m_camera->GetTransform(m_camera->GetPosition(), glm::vec3(0), glm::vec3(1)));
 
 	aie::Input* input = aie::Input::getInstance();
@@ -156,19 +146,30 @@ void GraphicsApp::update(float deltaTime)
 
 #pragma region ImGUI Light Settings
 
-	// ImGui::Begin("Light Settings");
-	// ImGui::DragFloat3("Global Light Direction", &m_light.direction[0], 0.1f, -1.0f, 1.0f);
-	// ImGui::DragFloat3("Global Light Colour", &m_light.colour[0], 0.1f, 0.0f, 2.0f);
-	// ImGui::End();
+	ImGui::Begin("Light Settings");
+	ImGui::DragFloat3("Global Light Direction", &m_scene->GetGlobalLight().direction[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Global Light Colour", &m_scene->GetGlobalLight().colour[0], 0.1f, 0.0f, 2.0f);
+	ImGui::End();
 
 #pragma endregion
 #pragma region ImGUI Local Transform
 
+	//auto h = m_scene->GetInstances().begin();
+
+	//auto iter = std::find(m_scene->GetInstances().begin(), m_scene->GetInstances().end(), 0);
+
+	//auto* obj = *iter;
+
+	auto* obj = m_scene->GetInstances().front(); // refactor for custom model later
+	// get_allocator
+
 	ImGui::Begin("Local Transform");
-	ImGui::DragFloat3("Position", &m_camera->GetPosition()[0], 0.1f, -1.0f, 1.0f);
-	ImGui::DragFloat3("Rotation", &m_camera->GetRotation()[0], 0.1f, -1.0f, 1.0f);
-	ImGui::DragFloat3("Scale", &m_camera->GetScale()[0], 0.1f, -1.0f, 1.0f);
+	ImGui::DragFloat3("Position", &_position[0], 0.1f, -100.0f, 100.0f);
+	ImGui::DragFloat3("Rotation", &_eulerAngles[0], 0.1f, -360.0f, 360.0f);
+	ImGui::DragFloat3("Scale", &_scale[0], 0.1f, -10.0f, 10.0f);
 	ImGui::End();
+
+	obj->SetTransform(obj->MakeTransform(_position, _eulerAngles, _scale));
 
 #pragma endregion
 
@@ -211,7 +212,6 @@ void GraphicsApp::draw()
 	}
 
 #pragma endregion
-
 #pragma region Quad
 
 	// Unbind the target to return it to the back buffer
@@ -230,6 +230,30 @@ void GraphicsApp::draw()
 
 	m_gridTexture.bind(0);
 	m_quadMesh.Draw();
+
+#pragma endregion
+#pragma region Phong Shader
+
+	m_phongShader.bind();
+	m_phongShader.bindUniform("LightDirection", m_scene->GetGlobalLight().direction);
+	m_phongShader.bindUniform("AmbientColour", m_scene->GetAmbientLight());
+	m_phongShader.bindUniform("LightColour", m_scene->GetGlobalLight().colour);
+	m_phongShader.bindUniform("CameraPosition", m_camera->GetPosition());
+
+	pvm = projectionMatrix * viewMatrix * m_bunnyTransform;
+	m_phongShader.bindUniform("ProjectionViewModel", pvm);
+	m_phongShader.bindUniform("ModelMatrix", m_bunnyTransform);
+
+	m_marbleTexture.bind(0);
+	m_phongShader.bindUniform("seamlessTexture", 0);
+
+	m_hatchingTexture.bind(1);
+	m_phongShader.bindUniform("hatchingTexture", 1);
+
+	m_rampTexture.bind(2);
+	m_phongShader.bindUniform("rampTexture", 2);
+
+	m_bunnyMesh.draw();
 
 #pragma endregion
 
@@ -318,8 +342,8 @@ bool GraphicsApp::LaunchShaders()
 #pragma endregion
 #pragma region Phong Shader
 
-	m_phongShader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/Phong.vert");
-	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/Phong.frag");
+	m_phongShader.loadShader(aie::eShaderStage::VERTEX, "./Shaders/phongExt.vert");
+	m_phongShader.loadShader(aie::eShaderStage::FRAGMENT, "./Shaders/phongExt.frag");
 	if (m_phongShader.link() == false)
 	{
 		printf("Phong Shader Error: %s\n", m_phongShader.getLastError());
@@ -371,7 +395,7 @@ bool GraphicsApp::LaunchShaders()
 		.5f,  0,	0,	0,
 		 0, .5f,	0,	0,
 		 0,	 0, .5f,	0,
-		 0,	 0,  0,	1
+		 0,	 0,  -4,	1
 	};
 
 #pragma endregion
@@ -401,10 +425,10 @@ bool GraphicsApp::LaunchShaders()
 		return false;
 	}
 	m_bunnyTransform = {
-		0.5f,    0,    0,	0,
-		   0, 0.5f,	   0,	0,
-		   0,	 0, 0.5f,	0,
-		   0,	 0,     0,	1
+		0.1f,    0,    0,	0,
+		   0, 0.1f,	   0,	0,
+		   0,	 0, 0.1f,	0,
+		  -4,	 0,    4,	1
 	}; // this is 10 units large
 
 #pragma endregion
@@ -438,6 +462,10 @@ bool GraphicsApp::LaunchShaders()
 	};
 
 #pragma endregion
+
+	m_marbleTexture.load("./textures/marble2.jpg");
+	m_hatchingTexture.load("./textures/ramp01.png");
+	m_rampTexture.load("./textures/ramps.png", true);
 
 	// create the fullscreen quad for post processing effects
 	m_screenQuad.InitialiseFullscreenQuad();

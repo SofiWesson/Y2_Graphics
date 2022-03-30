@@ -21,7 +21,7 @@ public:
 	virtual ~Texture();
 
 	// load a jpg, bmp, png or tga
-	bool load(const char* filename);
+	bool load(const char* filename, bool nearest = false);
 
 	// creates a texture that can be filled in with pixels
 	void create(unsigned int width, unsigned int height, Format format, unsigned char* pixels = nullptr);
