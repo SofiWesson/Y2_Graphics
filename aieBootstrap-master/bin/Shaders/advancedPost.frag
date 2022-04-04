@@ -95,7 +95,7 @@ vec4 Sepia(vec2 texCoord)
     return sepia;
 }
 
-vec4 Scanlines(vec2 texCoord) // not working come back to
+vec4 Scanlines(vec2 texCoord) // not working still
 {
     float density = 1.3f;
     float scanlineOpacity = 0.3;
@@ -114,6 +114,7 @@ vec4 Scanlines(vec2 texCoord) // not working come back to
     col += col * scanlines * scanlineOpacity;
     col += col * rand * noiseOpacity;
     col += col * sin(110.0 * deltaTime) * flickering;
+    col += texture(colourTarget, texCoord).rgb;
 
     return vec4(col, 1.0f);
 }
@@ -169,27 +170,34 @@ vec4 Posterization(vec2 texCoord)
     return vec4(colour.rgb * adjustment, 1.0f);
 }
 
-vec4 DistanceFog(vec2 texCoord) // get outline // fill outline with denser fog the further away it is
+vec4 DistanceFog(vec2 texCoord)
 {
-    float fogMaxDist = 5.0f;
-    float fogMinDist = 0.0f;
-    float density = 2.0f;
-    vec4 fogColour = vec4(0.8f, 0.8f, 0.8f, 1.0f);
-    
-    vec2 mid = vec2(0.5f);
-    float distanceFromCentre = distance(texCoord, mid);
+    // float fogMaxDist = 5.0f;
+    // float fogMinDist = 0.0f;
+    // float density = 2.0f;
+    // vec4 fogColour = vec4(0.8f, 0.8f, 0.8f, 1.0f);
+    // 
+    // vec2 mid = vec2(0.5f);
+    // float distanceFromCentre = distance(texCoord, mid);
 
-    //vec3 objPosition = vec3(transform[0][3], transform[1][3], transform[2][3]);
+    // //vec3 objPosition = vec3(transform[0][3], transform[1][3], transform[2][3]);
 
-    float dist = distance(vec3(distanceFromCentre, distanceFromCentre, 0.0f), vec3(distanceFromCentre, distanceFromCentre,density));
+    // float dist = distance(vec3(distanceFromCentre, distanceFromCentre, 0.0f), vec3(distanceFromCentre, distanceFromCentre,density));
 
-    float fogFactor = (fogMaxDist - dist) / (fogMaxDist - fogMinDist);
-    fogFactor = clamp(fogFactor, 0.0f, 1.0f);
+    // float fogFactor = (fogMaxDist - dist) / (fogMaxDist - fogMinDist);
+    // fogFactor = clamp(fogFactor, 0.0f, 1.0f);
 
-    vec4 colour = texture(colourTarget, texCoord);
-    vec4 outputColour = mix(fogColour, colour, fogFactor);
-    
-    return outputColour;
+    // vec4 colour = texture(colourTarget, texCoord);
+    // vec4 outputColour = mix(fogColour, colour, fogFactor);
+    // 
+    // return outputColour;
+
+    // https://learnopengl.com/Advanced-OpenGL/Depth-testing
+
+    float near 0.1;
+    float far = 100.0;
+
+    return vec4(vec3(gl_FragCoord.z).xyz, 1.0);
 }
 
 void main()

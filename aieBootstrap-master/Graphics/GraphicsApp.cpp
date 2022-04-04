@@ -12,6 +12,7 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <gl_core_4_4.h>
 
 using glm::vec3;
 using glm::vec4;
@@ -29,6 +30,8 @@ GraphicsApp::~GraphicsApp() {
 
 bool GraphicsApp::startup() {
 	
+	glEnable(GL_DEPTH_TEST);
+
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
 	// initialise gizmo primitive counts
@@ -274,6 +277,13 @@ void GraphicsApp::draw()
 	m_postShader.bindUniform("screenSize", glm::vec2(getWindowWidth(), getWindowHeight()));
 	m_postShader.bindUniform("deltaTime", m_dt);
 
+	if (m_postProcessingEffect == PostProcessEffects::DISTANCE_FOG)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_LESS);
+	}
+
 	m_renderTarget.getTarget(0).bind(0);
 
 	m_screenQuad.Draw();
@@ -395,7 +405,7 @@ bool GraphicsApp::LaunchShaders()
 		.5f,  0,	0,	0,
 		 0, .5f,	0,	0,
 		 0,	 0, .5f,	0,
-		 0,	 0,  -4,	1
+		 4,	 0,   4,	1
 	};
 
 #pragma endregion
@@ -458,7 +468,7 @@ bool GraphicsApp::LaunchShaders()
 		1, 0, 0, 0,
 		0, 1, 0, 0,
 		0, 0, 1, 0,
-		0, 2, 0, 1
+		0, 0, 0, 1
 	};
 
 #pragma endregion
@@ -474,10 +484,12 @@ bool GraphicsApp::LaunchShaders()
 	//LoadQuadMesh();
 	//LoadBoxMesh();
 	//LoadPyramidMesh();
-	LoadGridMesh();
+	//LoadGridMesh();
 
 	for (int i = 0; i < 10; i++)
 		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_spearMesh, &m_normalMapShader));
+
+	m_scene->AddInstance(new Instance(glm::vec3(-4, 1.45f, -4), glm::vec3(0), glm::vec3(1), &m_potionMesh, &m_normalMapShader));
 
 	return true;
 }

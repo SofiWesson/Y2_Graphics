@@ -78,7 +78,7 @@ protected:
 	
 	// for post-processing
 	Mesh m_screenQuad;
-	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DEFAULT;
+	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DISTANCE_FOG;
 	glm::mat4 m_modelTransform;
 
 	// list of basic meshes
