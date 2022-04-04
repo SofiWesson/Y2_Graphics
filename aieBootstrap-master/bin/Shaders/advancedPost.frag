@@ -194,10 +194,20 @@ vec4 DistanceFog(vec2 texCoord)
 
     // https://learnopengl.com/Advanced-OpenGL/Depth-testing
 
-    float near 0.1;
+    float near = 0.1;
     float far = 100.0;
 
-    return vec4(vec3(gl_FragCoord.z).xyz, 1.0);
+    float z = gl_FragCoord.z * 2.0 - 1.0;
+    float lineariseDepth = (2.0 * near * far) / (far + near - z * (far - near));
+    float depth = lineariseDepth / far;
+    clamp(depth, 0.0, 1.0);
+
+    vec4 baseColour = texture(colourTarget, texCoord);
+    vec4 depthColour = vec4(vec3(depth), 1.0);
+
+    float colour = dot(baseColour.rgb, depthColour.rgb);
+    
+    return vec4(vec3(colour), 1.0);
 }
 
 void main()

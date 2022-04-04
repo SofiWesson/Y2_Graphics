@@ -280,7 +280,7 @@ void GraphicsApp::draw()
 	if (m_postProcessingEffect == PostProcessEffects::DISTANCE_FOG)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glDepthMask(GL_TRUE);
+		glDepthMask(GL_FALSE);
 		glDepthFunc(GL_LESS);
 	}
 
