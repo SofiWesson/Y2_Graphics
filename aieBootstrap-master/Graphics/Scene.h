@@ -38,7 +38,7 @@ public:
 	glm::vec3				GetAmbientLight()	{ return m_ambientLight; }
 	std::vector<Light>&		GetPointLights()	{ return m_pointLights; }
 	int						GetNumLights()		{ return (int)m_pointLights.size(); }
-	std::list<Instance*>	GetInstances()		{ return m_instances; }
+	std::list<Instance*>&	GetInstances()		{ return m_instances; }
 
 	glm::vec3*		GetPointLightPositions()	{ return &m_pointLightPositions[0]; }
 	glm::vec3*		GetPointLightColour()		{ return &m_pointLightColours[0]; }

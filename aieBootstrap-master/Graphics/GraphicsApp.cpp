@@ -13,6 +13,7 @@
 #include <list>
 #include <vector>
 #include <gl_core_4_4.h>
+#include <string>
 
 using glm::vec3;
 using glm::vec4;
@@ -157,22 +158,39 @@ void GraphicsApp::update(float deltaTime)
 #pragma endregion
 #pragma region ImGUI Local Transform
 
-	//auto h = m_scene->GetInstances().begin();
+	ImGui::Begin("Debug");
 
-	//auto iter = std::find(m_scene->GetInstances().begin(), m_scene->GetInstances().end(), 0);
+	int i = 0;
 
-	//auto* obj = *iter;
+	//std::list<Instance*> instances = m_scene->GetInstances();
+	//for (auto iter = instances.begin(); iter != instances.end(); iter++)
+	for (auto iter = m_scene->GetInstances().begin(); iter != m_scene->GetInstances().end(); iter++)
+	{
+		i++;
+		std::string id = std::to_string(i);
 
-	auto* obj = m_scene->GetInstances().front(); // refactor for custom model later
-	// get_allocator
+		Instance* obj = *iter;
 
-	ImGui::Begin("Local Transform");
-	ImGui::DragFloat3("Position", &_position[0], 0.1f, -100.0f, 100.0f);
-	ImGui::DragFloat3("Rotation", &_eulerAngles[0], 0.1f, -360.0f, 360.0f);
-	ImGui::DragFloat3("Scale", &_scale[0], 0.1f, -10.0f, 10.0f);
+		ImGui::BeginGroup();
+		ImGui::CollapsingHeader(("Object Transform " + id).c_str());
+		
+		glm::vec3 pos = obj->GetPosition();
+		ImGui::DragFloat3(("Position " + id).c_str(), &pos.x, 0.1f, -100.0f, 100.0f);
+
+		glm::vec3 rot = obj->GetRotation();
+		// matrices are ment to use quaternions, glm only lets you pass in radians,
+		// and only lets you take out quaternions, this creates issues, use vec3 for rotation instead
+		ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f); // gimble lock on y
+
+		glm::vec3 scale = obj->GetScale();
+		ImGui::DragFloat3(("Scale " + id).c_str(), &scale.x, 0.1f, -10.0f, 10.0f);
+
+		obj->SetTransform(obj->MakeTransform(pos, rot, scale));
+
+		ImGui::EndGroup();
+	}
+
 	ImGui::End();
-
-	obj->SetTransform(obj->MakeTransform(_position, _eulerAngles, _scale));
 
 #pragma endregion
 
@@ -465,10 +483,10 @@ bool GraphicsApp::LaunchShaders()
 		return false;
 	}
 	m_potionTransform = {
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1
+		1, 0,  0, 0,
+		0, 1,  0, 0,
+		0, 0,  1, 0,
+	   -4, 0, -4, 1
 	};
 
 #pragma endregion
@@ -489,7 +507,7 @@ bool GraphicsApp::LaunchShaders()
 	for (int i = 0; i < 10; i++)
 		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_spearMesh, &m_normalMapShader));
 
-	m_scene->AddInstance(new Instance(glm::vec3(-4, 1.45f, -4), glm::vec3(0), glm::vec3(1), &m_potionMesh, &m_normalMapShader));
+	m_scene->AddInstance(new Instance(m_potionTransform, &m_potionMesh, &m_normalMapShader));
 
 	return true;
 }

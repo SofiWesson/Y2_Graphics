@@ -78,7 +78,7 @@ protected:
 	
 	// for post-processing
 	Mesh m_screenQuad;
-	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DISTANCE_FOG;
+	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DEFAULT;
 	glm::mat4 m_modelTransform;
 
 	// list of basic meshes
@@ -142,4 +142,6 @@ protected:
 	glm::vec3 _position;
 	glm::vec3 _eulerAngles;
 	glm::vec3 _scale;
+
+	Instance* m_instancePotion;
 };
