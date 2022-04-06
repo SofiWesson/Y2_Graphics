@@ -14,6 +14,7 @@
 #include <vector>
 #include <gl_core_4_4.h>
 #include <string>
+#include <glm/q_ea_conversion.hpp>
 
 using glm::vec3;
 using glm::vec4;
@@ -177,16 +178,21 @@ void GraphicsApp::update(float deltaTime)
 		glm::vec3 pos = obj->GetPosition();
 		ImGui::DragFloat3(("Position " + id).c_str(), &pos.x, 0.1f, -100.0f, 100.0f);
 
-		glm::vec3 rot = obj->GetRotation();
 		// matrices are ment to use quaternions, glm only lets you pass in radians,
 		// and only lets you take out quaternions, this creates issues, use vec3 for rotation instead
+		glm::vec3 rot = obj->GetRotation();
 		ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f); // gimble lock on y
-
+		
 		glm::vec3 scale = obj->GetScale();
 		ImGui::DragFloat3(("Scale " + id).c_str(), &scale.x, 0.1f, -10.0f, 10.0f);
 
-		obj->SetTransform(obj->MakeTransform(pos, rot, scale));
+		_test = glm::eulerAngles_to_quat(obj->GetRotation());
+		ImGui::DragFloat4(("Quat Test" + id).c_str(), &_test.x, 0.01f, -1.0f, 1.0f);
+		rot = glm::quat_to_eulerAngles(_test);
 
+		obj->SetTransform(obj->MakeTransform(pos, glm::vec3(0), scale));
+		obj->SetRotation(rot);
+		
 		ImGui::EndGroup();
 	}
 

@@ -143,5 +143,7 @@ protected:
 	glm::vec3 _eulerAngles;
 	glm::vec3 _scale;
 
+	glm::quat _test;
+
 	Instance* m_instancePotion;
 };
