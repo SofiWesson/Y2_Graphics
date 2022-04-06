@@ -126,6 +126,7 @@ protected:
 
 	Scene* m_scene;
 
+	// particle data
 	ParticleEmitter* m_particleEmitter;
 	aie::ShaderProgram m_particleShader;
 	glm::mat4 m_particleTransform;
@@ -139,11 +140,12 @@ protected:
 
 	float m_dt = 0.f;
 
+	// not used
 	glm::vec3 _position;
 	glm::vec3 _eulerAngles;
 	glm::vec3 _scale;
 
-	glm::quat _test;
+	glm::quat _test; // remove later
 
 	Instance* m_instancePotion;
 };

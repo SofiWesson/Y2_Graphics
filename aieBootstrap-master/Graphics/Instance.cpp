@@ -6,6 +6,7 @@
 
 #include <Texture.h>
 #include <glm/ext.hpp>
+#include <glm/q_ea_conversion.hpp>
 
 Instance::Instance(glm::mat4 a_transform, aie::OBJMesh* a_mesh, aie::ShaderProgram* a_shader) :
     m_transform(a_transform), m_mesh(a_mesh), m_shader(a_shader)
@@ -54,12 +55,14 @@ void Instance::Draw(Scene* a_scene)
 
 glm::mat4 Instance::MakeTransform(glm::vec3 a_position, glm::vec3 a_eulerAngles, glm::vec3 a_scale)
 {
+    // rotation because rotation in matrix is wrong at the moment
     m_rotation = a_eulerAngles;
 
-    glm::vec3 rot = glm::vec3(0);
+    glm::vec3 rot = glm::vec3(0); // possibly temp
 
+    // add position, rotation, and scale into a single matrix
     return glm::translate(glm::mat4(1), a_position)
-        * glm::rotate(glm::mat4(1), glm::radians(rot.x), glm::vec3(1, 0, 0))
+        * glm::rotate(glm::mat4(1), glm::radians(rot.x), glm::vec3(1, 0, 0)) // q_rotate below rotate that need to be done
         * glm::rotate(glm::mat4(1), glm::radians(rot.y), glm::vec3(0, 1, 0))
         * glm::rotate(glm::mat4(1), glm::radians(rot.z), glm::vec3(0, 0, 1))
         * glm::scale(glm::mat4(1), a_scale);

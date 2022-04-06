@@ -9,9 +9,9 @@
 // made by Sofi
 namespace glm
 {
-	template<typename T, precision P>
-	GLM_FUNC_QUALIFIER tquat<T, P> eulerAngles_to_quat(vec<3, T, P> const& v)
-	{
+    template<typename T, precision P>
+    GLM_FUNC_QUALIFIER tquat<T, P> eulerAngles_to_quat(vec<3, T, P> const& v)
+    {
         double cy = cos(v.y * 0.5);
         double sy = sin(v.y * 0.5);
         double cp = cos(v.x * 0.5);
@@ -26,7 +26,7 @@ namespace glm
         q.z = cr * cp * sy - sr * sp * cy;
 
         return q;
-	}
+    }
 
     template<typename T, precision P>
     GLM_FUNC_QUALIFIER vec<3, T, P> quat_to_eulerAngles(tquat<T, P> const& q)

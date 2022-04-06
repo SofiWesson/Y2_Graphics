@@ -39,14 +39,17 @@ bool GraphicsApp::startup() {
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
 
+	// initialise lights
 	Light light;
 	light.colour = { 1, 1, 1 };
 	light.direction = { 1, -1, 1 };
 	m_ambientLight = { .5f, .5f, .5f };
-
+	
+	// not being used
 	_position = { 0, 0, 0 };
 	_eulerAngles = { 0, 0, 0 };
 	_scale = { 1,1,1 };
+	_test = { 0, 0, 0, 0 }; // remove later
 
 
 	// create simple camera transforms
@@ -127,7 +130,7 @@ void GraphicsApp::update(float deltaTime)
 		m_camera.setScale(m_camera.GetScale() + glm::vec3(.01f, .01f, .01f));*/
 
 #pragma region RotateBunny
-
+	// rotaters the bunny transform
 	if (input->isKeyDown(aie::INPUT_KEY_UP))
 		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'x', 0.1f);
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
@@ -150,7 +153,7 @@ void GraphicsApp::update(float deltaTime)
 		quit();
 
 #pragma region ImGUI Light Settings
-
+	// ImGui light controls
 	ImGui::Begin("Light Settings");
 	ImGui::DragFloat3("Global Light Direction", &m_scene->GetGlobalLight().direction[0], 0.1f, -1.0f, 1.0f);
 	ImGui::DragFloat3("Global Light Colour", &m_scene->GetGlobalLight().colour[0], 0.1f, 0.0f, 2.0f);
@@ -158,6 +161,8 @@ void GraphicsApp::update(float deltaTime)
 
 #pragma endregion
 #pragma region ImGUI Local Transform
+
+	// Manipulate the transform of all Instanced objects
 
 	ImGui::Begin("Debug");
 
@@ -167,6 +172,7 @@ void GraphicsApp::update(float deltaTime)
 	//for (auto iter = instances.begin(); iter != instances.end(); iter++)
 	for (auto iter = m_scene->GetInstances().begin(); iter != m_scene->GetInstances().end(); iter++)
 	{
+		// instance id
 		i++;
 		std::string id = std::to_string(i);
 
@@ -181,15 +187,17 @@ void GraphicsApp::update(float deltaTime)
 		// matrices are ment to use quaternions, glm only lets you pass in radians,
 		// and only lets you take out quaternions, this creates issues, use vec3 for rotation instead
 		glm::vec3 rot = obj->GetRotation();
-		ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f); // gimble lock on y
+		ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f); // // gimble lock on y
 		
 		glm::vec3 scale = obj->GetScale();
 		ImGui::DragFloat3(("Scale " + id).c_str(), &scale.x, 0.1f, -10.0f, 10.0f);
 
+		// testing custom conversion script // remove later
 		_test = glm::eulerAngles_to_quat(obj->GetRotation());
 		ImGui::DragFloat4(("Quat Test" + id).c_str(), &_test.x, 0.01f, -1.0f, 1.0f);
 		rot = glm::quat_to_eulerAngles(_test);
 
+		// adds changes to the transform of the object
 		obj->SetTransform(obj->MakeTransform(pos, glm::vec3(0), scale));
 		obj->SetRotation(rot);
 		
@@ -221,11 +229,13 @@ void GraphicsApp::draw()
 
 	m_scene->Draw();
 
+	// projection view matrix
 	pvm = projectionMatrix * viewMatrix * m_particleTransform;
+
 	DrawOurParticles(pvm);
 
 #pragma region Simple Shader on Basic Meshes
-
+	
 	m_shader.bind();
 
 	for (int i = 0; i < m_basicMeshTransforms.size(); i++)
@@ -239,7 +249,7 @@ void GraphicsApp::draw()
 	}
 
 #pragma endregion
-#pragma region Quad
+#pragma region View Quad
 
 	// Unbind the target to return it to the back buffer
 	//m_renderTarget.unbind();
@@ -301,6 +311,7 @@ void GraphicsApp::draw()
 	m_postShader.bindUniform("screenSize", glm::vec2(getWindowWidth(), getWindowHeight()));
 	m_postShader.bindUniform("deltaTime", m_dt);
 
+	// opengl stuff for getting depth buffer
 	if (m_postProcessingEffect == PostProcessEffects::DISTANCE_FOG)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -317,6 +328,7 @@ void GraphicsApp::draw()
 
 glm::mat4 GraphicsApp::RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radian)
 {
+	// old rotation function, not used anymore
 	float cos = glm::cos(a_radian);
 	float sin = glm::sin(a_radian);
 
@@ -510,9 +522,10 @@ bool GraphicsApp::LaunchShaders()
 	//LoadPyramidMesh();
 	//LoadGridMesh();
 
+	// creating instances of spear
 	for (int i = 0; i < 10; i++)
 		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_spearMesh, &m_normalMapShader));
-
+	// creating instance of potion bottle
 	m_scene->AddInstance(new Instance(m_potionTransform, &m_potionMesh, &m_normalMapShader));
 
 	return true;
@@ -523,14 +536,17 @@ void GraphicsApp::LoadQuadMesh()
 	const int numVertices = 4;
 	const int numIndices = 6;
 
+	// create vertices for quad mesh
 	Mesh::Vertex vertices[numVertices];
 	vertices[0].position = { -0.5f,  0,  0.5, 1 }; // bottom left
 	vertices[1].position = {  0.5f,  0,  0.5, 1 }; // bottom front
 	vertices[2].position = { -0.5f,  0, -0.5, 1 }; // bottom back
 	vertices[3].position = {  0.5f,  0, -0.5, 1 }; // bottom right
 
+	// form tris
 	unsigned int indices[numIndices] = { 0, 1, 2, 2, 1, 3 };
 
+	// initialise mesh
 	m_quadMesh.Initialise(numVertices, vertices, numIndices, indices);
 	m_quadTransform = {
 		10,  0,	0,	0,
@@ -539,6 +555,7 @@ void GraphicsApp::LoadQuadMesh()
 		 0,	 0,  0,	1
 	}; // this is 10 units large
 
+	// add to lists to be easily used in mass
 	m_basicMeshes.push_back(m_quadMesh);
 	m_basicMeshTransforms.push_back(m_quadTransform);
 }
