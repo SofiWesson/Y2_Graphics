@@ -1,0 +1,325 @@
+Using pre-set license
+Built from '2020.3/staging' branch; Version is '2020.3.5f1 (8095aa901b9b) revision 8426922'; Using compiler version '192528614'; Build Type 'Release'
+OS: 'Windows 10 Education; OS build 19044.1288; Version 2009; 64bit' Language: 'en' Physical Memory: 32632 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 0
+
+ COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2020.3.5f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+C:/Users/s201031/Desktop/Y2_Graphics/URP Project
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+58225
+Successfully changed project path to: C:/Users/s201031/Desktop/Y2_Graphics/URP Project
+C:/Users/s201031/Desktop/Y2_Graphics/URP Project
+Using Asset Import Pipeline V2.
+Refreshing native plugins compatible for Editor in 54.31 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2020.3.5f1 (8095aa901b9b)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/s201031/Desktop/Y2_Graphics/URP Project/Assets
+GfxDevice: creating device client; threaded=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce GTX 970 (ID=0x13c2)
+    Vendor:   
+    VRAM:     4043 MB
+    Driver:   30.0.14.9676
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56516
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2020.3.5f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.003419 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 63.36 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.267 seconds
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.001719 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 57.72 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.817 seconds
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+Refreshing native plugins compatible for Editor in 0.52 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3110 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 142.8 MB.
+System memory in use after: 140.1 MB.
+
+Unloading 47 unused Assets to reduce memory usage. Loaded Objects now: 3525.
+Total: 6.498400 ms (FindLiveObjects: 0.826000 ms CreateObjectMapping: 0.693300 ms MarkObjects: 3.477100 ms  DeleteObjects: 1.500600 ms)
+
+========================================================================
+Received Import Request.
+  path: Assets/Animation/Casual/rifle idle.fbx
+  artifactKey: Guid(7536749cdf1cb114cb768ad952d6c556) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Casual/rifle idle.fbx using Guid(7536749cdf1cb114cb768ad952d6c556) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '846a27c28f6f66437ffaec2f2da1c333') in 0.393075 seconds
+  Import took 0.401554 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.159673 seconds.
+  path: Assets/Animation/Casual/rifle run.fbx
+  artifactKey: Guid(f2ed062951b43b54e8083cd4e383ae3a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Casual/rifle run.fbx using Guid(f2ed062951b43b54e8083cd4e383ae3a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7476bbfeddd26111e29893798cd48701') in 0.051925 seconds
+  Import took 0.058756 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.101476 seconds.
+  path: Assets/Animation/Casual/rifle walk.fbx
+  artifactKey: Guid(5030b938fa680bd41955bddfed76afe0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Casual/rifle walk.fbx using Guid(5030b938fa680bd41955bddfed76afe0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ef74970e38aa1d28b4f54194e7517e06') in 0.071975 seconds
+  Import took 0.079963 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001747 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.88 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.408 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.97 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3014 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 156.3 MB.
+System memory in use after: 153.6 MB.
+
+Unloading 40 unused Assets to reduce memory usage. Loaded Objects now: 3610.
+Total: 5.057200 ms (FindLiveObjects: 0.477700 ms CreateObjectMapping: 0.185300 ms MarkObjects: 2.829900 ms  DeleteObjects: 1.562600 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 95.651093 seconds.
+  path: Assets/Animation/Casual/rifle walk.fbx
+  artifactKey: Guid(5030b938fa680bd41955bddfed76afe0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Casual/rifle walk.fbx using Guid(5030b938fa680bd41955bddfed76afe0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '05b779607a006912e79791387fe8aa3a') in 0.274292 seconds
+  Import took 0.281186 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001831 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.56 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.212 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.57 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3014 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 156.5 MB.
+System memory in use after: 153.8 MB.
+
+Unloading 40 unused Assets to reduce memory usage. Loaded Objects now: 3649.
+Total: 5.627400 ms (FindLiveObjects: 0.533700 ms CreateObjectMapping: 0.332400 ms MarkObjects: 3.238100 ms  DeleteObjects: 1.521900 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 160.814262 seconds.
+  path: Assets/Animation/Casual/rifle idle.fbx
+  artifactKey: Guid(7536749cdf1cb114cb768ad952d6c556) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Casual/rifle idle.fbx using Guid(7536749cdf1cb114cb768ad952d6c556) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a1d64d3c5a0a26c70e9468f194d3969d') in 0.267822 seconds
+  Import took 0.276451 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.673995 seconds.
+  path: Assets/Animation/Casual/rifle run.fbx
+  artifactKey: Guid(f2ed062951b43b54e8083cd4e383ae3a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Casual/rifle run.fbx using Guid(f2ed062951b43b54e8083cd4e383ae3a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3e8d7730a15883f48c162b4029d4ee4b') in 0.072531 seconds
+  Import took 0.081231 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.427434 seconds.
+  path: Assets/Animation/Casual/rifle walk.fbx
+  artifactKey: Guid(5030b938fa680bd41955bddfed76afe0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Casual/rifle walk.fbx using Guid(5030b938fa680bd41955bddfed76afe0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c07f11dc419a47998b323a2db6b5ae9b') in 0.047872 seconds
+  Import took 0.054144 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.002030 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.55 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.196 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.53 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3014 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 156.6 MB.
+System memory in use after: 154.0 MB.
+
+Unloading 40 unused Assets to reduce memory usage. Loaded Objects now: 3688.
+Total: 5.897600 ms (FindLiveObjects: 0.283000 ms CreateObjectMapping: 0.120300 ms MarkObjects: 3.644900 ms  DeleteObjects: 1.847500 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 212.840626 seconds.
+  path: Assets/Animation/idle aim.fbx
+  artifactKey: Guid(b9d4f3131f6994b4793db58e1e265b1f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/idle aim.fbx using Guid(b9d4f3131f6994b4793db58e1e265b1f) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '353c781a14ffd7a1289a034e41d86b42') in 0.235364 seconds
+  Import took 0.243013 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 14.659709 seconds.
+  path: Assets/Animation/Aim/walk backward left.fbx
+  artifactKey: Guid(cd62f7064115a054098beccd4d114814) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk backward left.fbx using Guid(cd62f7064115a054098beccd4d114814) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a293d74e1018a5e02680ee384e64ca47') in 0.070156 seconds
+  Import took 0.076054 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.309820 seconds.
+  path: Assets/Animation/Aim/walk backward right.fbx
+  artifactKey: Guid(5bc6d2f3d43960d4da9874a94c178144) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk backward right.fbx using Guid(5bc6d2f3d43960d4da9874a94c178144) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '60615c509cd1e73f6f8691e39914ec14') in 0.075649 seconds
+  Import took 0.082372 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.936097 seconds.
+  path: Assets/Animation/Aim/walk backward.fbx
+  artifactKey: Guid(514fbfbafef581d448bb753ccbe2c940) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk backward.fbx using Guid(514fbfbafef581d448bb753ccbe2c940) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '41b86b309f28a05f3b0ca86cef4e2500') in 0.062674 seconds
+  Import took 0.068561 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.395008 seconds.
+  path: Assets/Animation/Aim/walk forward left.fbx
+  artifactKey: Guid(6bd2c7b5ded4df64ab3aa89ca726ab50) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk forward left.fbx using Guid(6bd2c7b5ded4df64ab3aa89ca726ab50) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5d6a57d5069996a48388bcd69848a5ac') in 0.075599 seconds
+  Import took 0.082719 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.426181 seconds.
+  path: Assets/Animation/Aim/walk forward right.fbx
+  artifactKey: Guid(3ecc4ef0f065b384891aeae85111313b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk forward right.fbx using Guid(3ecc4ef0f065b384891aeae85111313b) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3b2d47bf6a57ff8b0bb0898361db18b3') in 0.060154 seconds
+  Import took 0.067284 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.534692 seconds.
+  path: Assets/Animation/Aim/walk forward.fbx
+  artifactKey: Guid(48d7bb8c5ff42c04a86cc1e5bc9025d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk forward.fbx using Guid(48d7bb8c5ff42c04a86cc1e5bc9025d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b84e0dec4e75f61e66ddaa847a2aa594') in 0.060692 seconds
+  Import took 0.067976 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.226558 seconds.
+  path: Assets/Animation/Aim/walk left.fbx
+  artifactKey: Guid(72ed1cfdcae1ecd40acf3528b38ae002) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk left.fbx using Guid(72ed1cfdcae1ecd40acf3528b38ae002) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1e8b1ffa81ff8e2c2dc65823406d6df3') in 0.070510 seconds
+  Import took 0.077376 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.604548 seconds.
+  path: Assets/Animation/Aim/walk right.fbx
+  artifactKey: Guid(cd306b51a37cc704bbb43fdd70c116f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Animation/Aim/walk right.fbx using Guid(cd306b51a37cc704bbb43fdd70c116f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '426088e31f545568b0602cd675908e8b') in 0.053954 seconds
+  Import took 0.062267 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 105.917333 seconds.
+  path: Assets/Scripts/Animation/AimOverrideControllerTPS.cs
+  artifactKey: Guid(857c3a785dbb05f48ac761aa0e9f638e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Scripts/Animation/AimOverrideControllerTPS.cs using Guid(857c3a785dbb05f48ac761aa0e9f638e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bfb4882c1fde67529e720b52e41bdf96') in 0.009758 seconds
+  Import took 0.017382 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001900 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.57 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.318 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.53 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3015 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 157.5 MB.
+System memory in use after: 154.8 MB.
+
+Unloading 40 unused Assets to reduce memory usage. Loaded Objects now: 3728.
+Total: 4.245000 ms (FindLiveObjects: 0.317700 ms CreateObjectMapping: 0.121100 ms MarkObjects: 2.325300 ms  DeleteObjects: 1.479700 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001908 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.51 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  1.201 seconds
+Platform modules already initialized, skipping
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Shader 'Universal Render Pipeline/Particles/Lit': fallback shader 'Universal Render Pipeline/Particles/SimpleLit' not found
+Refreshing native plugins compatible for Editor in 0.62 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 3015 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 157.5 MB.
+System memory in use after: 154.8 MB.
+
+Unloading 40 unused Assets to reduce memory usage. Loaded Objects now: 3731.
+Total: 4.881800 ms (FindLiveObjects: 0.516200 ms CreateObjectMapping: 0.144900 ms MarkObjects: 2.641600 ms  DeleteObjects: 1.577300 ms)
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file
