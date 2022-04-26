@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637854030125060791
-    m_Hash: 2495083434
+      ticks: 637865243296478912
+    m_Hash: 3738933721
   m_LockFileStatus:
     m_FilePath: C:/Users/s201031/Desktop/Y2_Graphics/URP Project/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637854030125230742
-    m_Hash: 269194364
+      ticks: 637865243296478912
+    m_Hash: 3073879923
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_PackageAssets:
@@ -874,7 +874,6 @@ m_PackageAssets:
         - 10.7.0
         - 10.8.0
         - 10.8.1
-        - 10.9.0
         compatible:
         - 10.4.0
         - 10.5.0
@@ -3357,7 +3356,6 @@ m_PackageAssets:
         - 10.7.0
         - 10.8.0
         - 10.8.1
-        - 10.9.0
         compatible:
         - 10.4.0
         - 10.5.0
@@ -3512,7 +3510,6 @@ m_PackageAssets:
         - 10.7.0
         - 10.8.0
         - 10.8.1
-        - 10.9.0
         compatible:
         - 10.4.0
         - 10.5.0
@@ -3685,7 +3682,6 @@ m_PackageAssets:
         - 1.6.5
         - 1.7.0-pre.1
         - 1.7.0
-        - 1.7.1
         compatible:
         - 1.1.1
         - 1.1.2
@@ -3767,7 +3763,6 @@ m_PackageAssets:
         - 1.6.5
         - 1.7.0-pre.1
         - 1.7.0
-        - 1.7.1
         verified: 1.4.11
       dependencies:
       - name: com.unity.mathematics
