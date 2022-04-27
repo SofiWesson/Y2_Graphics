@@ -53,22 +53,21 @@
     <UnityVersion>2020.3.5f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\GUI\Player.cs" />
     <Compile Include="Assets\Scripts\Animation\InputManagerTPS.cs" />
+    <Compile Include="Assets\Scripts\GUI\ToggleActive.cs" />
     <Compile Include="Assets\Scripts\Animation\AimOverrideControllerTPS.cs" />
+    <Compile Include="Assets\Scripts\GUI\ToggleParticleAction.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
+    <Compile Include="Assets\Scripts\GUI\ActionUI.cs" />
+    <Compile Include="Assets\Scripts\GUI\Pause.cs" />
+    <Compile Include="Assets\Scripts\GUI\ChangeMatAction.cs" />
+    <Compile Include="Assets\Scripts\GUI\ActionListUI.cs" />
+    <Compile Include="Assets\Scripts\GUI\BasicAction.cs" />
+    <Compile Include="Assets\Scripts\GUI\ToggleButtonUse.cs" />
+    <Compile Include="Assets\Scripts\GUI\ActionList.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Animation\PlayerControlsTPS.cs" />
-    <Compile Include="Assets\Scripts\GUI\ActionUI.cs" />
-    <Compile Include="Assets\Scripts\GUI\Player.cs" />
-    <Compile Include="Assets\Scripts\GUI\ActionListUI.cs" />
-    <Compile Include="Assets\Scripts\GUI\ActionList.cs" />
-    <Compile Include="Assets\Scripts\GUI\BasicAction.cs" />
-    <Compile Include="Assets\Scripts\GUI\ToggleActive.cs" />
-    <Compile Include="Assets\Scripts\GUI\ToggleButtonUse.cs" />
-    <Compile Include="Assets\Scripts\GUI\ActionButton.cs" />
-    <Compile Include="Assets\Scripts\GUI\ChangeMatAction.cs" />
-    <Compile Include="Assets\Scripts\GUI\ToggleParticleAction.cs" />
-    <Compile Include="Assets\Scripts\GUI\Pause.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -689,6 +688,9 @@
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Burst.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Searcher.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
     </Reference>
@@ -710,6 +712,9 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Animation.Rigging">
+      <HintPath>Library\ScriptAssemblies\Unity.Animation.Rigging.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Mathematics">
       <HintPath>Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
     </Reference>
@@ -718,6 +723,9 @@
     </Reference>
     <Reference Include="Cinemachine">
       <HintPath>Library\ScriptAssemblies\Cinemachine.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
     </Reference>
     <Reference Include="com.unity.cinemachine.editor">
       <HintPath>Library\ScriptAssemblies\com.unity.cinemachine.editor.dll</HintPath>
@@ -728,29 +736,20 @@
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Animation.Rigging">
-      <HintPath>Library\ScriptAssemblies\Unity.Animation.Rigging.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Animation.Rigging.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Animation.Rigging.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Burst.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Burst">
-      <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
+    <Reference Include="Unity.RenderPipelines.Core.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,7 @@ public class InputManagerTPS : MonoBehaviour
     public bool aim;
     public bool shoot;
     public bool run;
+    public bool key;
     //public bool grenade;
 
     public bool movement;
@@ -52,6 +53,11 @@ public class InputManagerTPS : MonoBehaviour
         run = a_runState;
     }
 
+    public void KeyboardInput(bool a_key)
+    {
+        key = a_key;
+    }
+
     #endregion
 
     #region Functions Created For Connecting To Unity Input System
@@ -87,6 +93,11 @@ public class InputManagerTPS : MonoBehaviour
     public void OnRun(InputValue a_value)
     {
         RunInput(a_value.isPressed);
+    }
+
+    public void OnKeyPress(InputValue a_value)
+    {
+        KeyboardInput(a_value.isPressed);
     }
 
     #endregion

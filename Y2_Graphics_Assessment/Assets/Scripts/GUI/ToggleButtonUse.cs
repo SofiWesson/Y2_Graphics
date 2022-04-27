@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ToggleButtonUse : MonoBehaviour
 {
@@ -21,26 +22,31 @@ public class ToggleButtonUse : MonoBehaviour
     {
         if (timer <= 0f)
         {
-            if (Input.GetKey(KeyCode.Tab))
+            if (Keyboard.current.tabKey.wasPressedThisFrame)
             {
-                canPressButtons = !canPressButtons;
-                inputManager.cursorLocked = !inputManager.cursorLocked;
-                inputManager.cursorInputLook = !inputManager.cursorInputLook;
-                
-                if (canPressButtons)
-                {
-                    Cursor.lockState = CursorLockMode.None;
-                    timer = timerReset;
-                }
-                else
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    timer = timerReset;
-                }
+                ToggleUse();
             }
         }
 
         if (timer > 0f)
             timer -= 1f * Time.deltaTime;
+    }
+
+    public void ToggleUse()
+    {
+        canPressButtons = !canPressButtons;
+        inputManager.cursorLocked = !inputManager.cursorLocked;
+        inputManager.cursorInputLook = !inputManager.cursorInputLook;
+
+        if (canPressButtons)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            timer = timerReset;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            timer = timerReset;
+        }
     }
 }

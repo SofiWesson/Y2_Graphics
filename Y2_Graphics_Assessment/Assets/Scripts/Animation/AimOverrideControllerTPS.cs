@@ -36,6 +36,22 @@ public class AimOverrideControllerTPS : MonoBehaviour
     private Vector2 m_currentAnimationVec;
     private Vector2 m_animationDirection;
 
+    [Space(10)]
+    [Header("Right Hand Target Transforms")]
+    public Transform RHTarget;
+    private Vector3 m_RHTargetDefaultPosition = new Vector3(0, 0, 0);
+    private Vector3 m_RHTargetDefaultRotation = new Vector3(0, 0, 0);
+    public Vector3 RHTargetADSPosition = new Vector3(0, 0, 0);
+    public Vector3 RHTargetADSRotation = new Vector3(0, 0, 0);
+
+    [Space(10)]
+    [Header("Right Hand Target Transforms")]
+    public Transform LHTarget;
+    private Vector3 m_LHTargetDefaultPosition = new Vector3(0, 0, 0);
+    private Vector3 m_LHTargetDefaultRotation = new Vector3(0, 0, 0);
+    public Vector3 LHTargetADSPosition = new Vector3(0, 0, 0);
+    public Vector3 LHTargetADSRotation = new Vector3(0, 0, 0);
+
     [Space(20)]
     [Header("Other")]
     [Tooltip("How far can the bullet be shot for our hitscan")]
@@ -55,6 +71,12 @@ public class AimOverrideControllerTPS : MonoBehaviour
         m_controller = GetComponent<PlayerControlsTPS>();
         m_inputs = GetComponent<InputManagerTPS>();
         m_animator = GetComponent<Animator>();
+
+        m_RHTargetDefaultPosition = RHTarget.localPosition;
+        m_RHTargetDefaultRotation = RHTarget.localRotation.eulerAngles;
+
+        m_LHTargetDefaultPosition = LHTarget.localPosition;
+        m_LHTargetDefaultRotation = LHTarget.localRotation.eulerAngles;
     }
 
     // Update is called once per frame
@@ -63,10 +85,13 @@ public class AimOverrideControllerTPS : MonoBehaviour
         Vector2 movement = m_inputs.move.normalized;
         m_currentAnimationVec = Vector2.SmoothDamp(m_currentAnimationVec,
             movement, ref m_animationDirection, 0.1f, 1f);
-        m_animator.SetBool("IsStillADS", movement == Vector2.zero ? true : false);
-        m_animator.SetBool("IsMotionADS", m_inputs.aim);
+        m_animator.SetBool("IsStill", movement == Vector2.zero ? true : false);
+        m_animator.SetBool("IsADS", m_inputs.aim);
         m_animator.SetFloat("ForwardMotion", m_currentAnimationVec.y);
         m_animator.SetFloat("RightMotion", m_currentAnimationVec.x);
+
+        // make forwardmotion and right motion change faster
+
         Vector3 mouseWorldPos;
         Vector2 screenCenter = new Vector2(Screen.width / 2, Screen.height / 2);
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
@@ -89,6 +114,24 @@ public class AimOverrideControllerTPS : MonoBehaviour
             aimTarget.y = transform.position.y;
             Vector3 aimDirection = (aimTarget - transform.position).normalized;
             transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * 20);
+
+            if (movement != new Vector2(0, 0))
+            {
+                RHTarget.localPosition = RHTargetADSPosition;
+                RHTarget.localRotation = Quaternion.Euler(RHTargetADSRotation.x, RHTargetADSRotation.y, RHTargetADSRotation.z);
+
+                LHTarget.localPosition = LHTargetADSPosition;
+                LHTarget.localRotation = Quaternion.Euler(LHTargetADSRotation.x, LHTargetADSRotation.y, LHTargetADSRotation.z);
+            }
+            else
+            {
+                RHTarget.localPosition = m_RHTargetDefaultPosition;
+                RHTarget.localRotation = Quaternion.Euler(m_RHTargetDefaultRotation.x, m_RHTargetDefaultRotation.y, m_RHTargetDefaultRotation.z);
+
+                LHTarget.localPosition = m_LHTargetDefaultPosition;
+                LHTarget.localRotation = Quaternion.Euler(m_LHTargetDefaultRotation.x, m_LHTargetDefaultRotation.y, m_LHTargetDefaultRotation.z);
+            }
+
         }
         else
         {
