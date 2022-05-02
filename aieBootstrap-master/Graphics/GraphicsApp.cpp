@@ -14,7 +14,7 @@
 #include <vector>
 #include <gl_core_4_4.h>
 #include <string>
-#include <glm/q_ea_conversion.hpp>
+//#include <glm/q_ea_conversion.hpp>
 
 using glm::vec3;
 using glm::vec4;
@@ -193,9 +193,9 @@ void GraphicsApp::update(float deltaTime)
 		ImGui::DragFloat3(("Scale " + id).c_str(), &scale.x, 0.1f, -10.0f, 10.0f);
 
 		// testing custom conversion script // remove later
-		_test = glm::eulerAngles_to_quat(obj->GetRotation());
-		ImGui::DragFloat4(("Quat Test" + id).c_str(), &_test.x, 0.01f, -1.0f, 1.0f);
-		rot = glm::quat_to_eulerAngles(_test);
+		//_test = glm::eulerAngles_to_quat(obj->GetRotation());
+		//ImGui::DragFloat4(("Quat Test" + id).c_str(), &_test.x, 0.01f, -1.0f, 1.0f);
+		//rot = glm::quat_to_eulerAngles(_test);
 
 		// adds changes to the transform of the object
 		obj->SetTransform(obj->MakeTransform(pos, glm::vec3(0), scale));

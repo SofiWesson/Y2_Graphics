@@ -6,7 +6,7 @@
 
 #include <Texture.h>
 #include <glm/ext.hpp>
-#include <glm/q_ea_conversion.hpp>
+//#include <glm/q_ea_conversion.hpp>
 
 Instance::Instance(glm::mat4 a_transform, aie::OBJMesh* a_mesh, aie::ShaderProgram* a_shader) :
     m_transform(a_transform), m_mesh(a_mesh), m_shader(a_shader)
