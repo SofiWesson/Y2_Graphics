@@ -36,7 +36,5 @@ public class Pause : MonoBehaviour
     public void ExitFunc()
     {
         Application.Quit();
-        if (EditorApplication.isPlaying)
-            EditorApplication.ExitPlaymode();
     }
 }
