@@ -31,7 +31,8 @@ public class ActionUI : MonoBehaviour
 
     private void Start()
     {
-        SetAction(action);
+        if (action)
+            SetAction(action);
     }
 
     public void SetAction(BasicAction a)
