@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ToggleParticleAction : MonoBehaviour
 {
-    ParticleSystem particleSystem;
+    new ParticleSystem particleSystem;
 
     private void Awake()
     {

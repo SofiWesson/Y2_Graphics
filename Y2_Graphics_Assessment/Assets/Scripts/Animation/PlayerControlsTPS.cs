@@ -54,7 +54,6 @@ public class PlayerControlsTPS : MonoBehaviour
     private float m_rotation = 0;
     private float m_rotationVelcity;
     private float m_forwardVelocity;
-    private float m_maxForwardVelocity = 55;
     private bool m_rotateOnMove = true;
 
     private Animator m_animator;
