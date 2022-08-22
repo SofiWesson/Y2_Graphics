@@ -16,6 +16,9 @@
     <Filter Include="Source Files\Provided">
       <UniqueIdentifier>{3505b632-b3b3-4adb-8336-d45c7576b265}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{bb1837c1-1c15-4a5b-af3d-01193a42965c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,5 +95,55 @@
     <ClInclude Include="ParticleEmitter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\Shaders\advancedPost.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\advancedPost.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\normalMap.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\normalMap.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\particle.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\particle.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\Phong.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\Phong.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\phongExt.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\phongExt.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\post.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\post.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\simple.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\simple.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\texture.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="..\bin\Shaders\texture.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

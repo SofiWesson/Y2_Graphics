@@ -241,6 +241,8 @@ void GraphicsApp::draw()
 	m_rampTexture.bind(2);
 	m_phongShader.bindUniform("rampTexture", 2);
 
+	m_bunnyMesh.draw();
+
 #pragma endregion
 
 	Gizmos::draw(projectionMatrix * viewMatrix);
@@ -473,8 +475,8 @@ bool GraphicsApp::LaunchShaders()
 	m_scene->AddInstance(new Instance(m_potionTransform, &m_potionMesh, &m_normalMapShader));
 	m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
 
-	m_scene->AddInstance(new Instance(m_bunnyTransform, &m_bunnyMesh, &m_normalMapShader));
-	m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
+	//m_scene->AddInstance(new Instance(m_bunnyTransform, &m_bunnyMesh, &m_normalMapShader));
+	//m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
 
 	return true;
 }

@@ -193,6 +193,24 @@
     <ClInclude Include="SolarSystem.h" />
     <ClInclude Include="tiny_obj_loader.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bin\Shaders\advancedPost.frag" />
+    <None Include="..\bin\Shaders\advancedPost.vert" />
+    <None Include="..\bin\Shaders\normalMap.frag" />
+    <None Include="..\bin\Shaders\normalMap.vert" />
+    <None Include="..\bin\Shaders\particle.frag" />
+    <None Include="..\bin\Shaders\particle.vert" />
+    <None Include="..\bin\Shaders\Phong.frag" />
+    <None Include="..\bin\Shaders\Phong.vert" />
+    <None Include="..\bin\Shaders\phongExt.frag" />
+    <None Include="..\bin\Shaders\phongExt.vert" />
+    <None Include="..\bin\Shaders\post.frag" />
+    <None Include="..\bin\Shaders\post.vert" />
+    <None Include="..\bin\Shaders\simple.frag" />
+    <None Include="..\bin\Shaders\simple.vert" />
+    <None Include="..\bin\Shaders\texture.frag" />
+    <None Include="..\bin\Shaders\texture.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
