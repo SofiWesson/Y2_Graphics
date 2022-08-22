@@ -4,6 +4,10 @@
 Scene::Scene(Camera* a_camera, glm::vec2 a_windowSize, Light& a_light, glm::vec3 a_ambientLight) :
 	m_camera(a_camera), m_windowSize(a_windowSize), m_globalDirLight(a_light), m_ambientLight(a_ambientLight)
 {
+	m_camera = a_camera;
+	m_windowSize = a_windowSize;
+	m_globalDirLight = a_light;
+	m_ambientLight = a_ambientLight;
 }
 
 Scene::~Scene()

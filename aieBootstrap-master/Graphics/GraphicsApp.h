@@ -75,7 +75,7 @@ protected:
 	aie::ShaderProgram m_postShader;
 
 	aie::RenderTarget m_renderTarget;
-	
+
 	// for post-processing
 	Mesh m_screenQuad;
 	PostProcessEffects m_postProcessingEffect = PostProcessEffects::DEFAULT;
@@ -139,13 +139,6 @@ protected:
 	aie::Texture m_rampTexture;
 
 	float m_dt = 0.f;
-
-	// not used
-	glm::vec3 _position;
-	glm::vec3 _eulerAngles;
-	glm::vec3 _scale;
-
-	glm::quat _test; // remove later
 
 	Instance* m_instancePotion;
 };

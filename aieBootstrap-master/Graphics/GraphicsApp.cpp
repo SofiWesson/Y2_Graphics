@@ -14,7 +14,6 @@
 #include <vector>
 #include <gl_core_4_4.h>
 #include <string>
-//#include <glm/q_ea_conversion.hpp>
 
 using glm::vec3;
 using glm::vec4;
@@ -23,7 +22,7 @@ using aie::Gizmos;
 
 GraphicsApp::GraphicsApp()
 {
-	
+
 }
 
 GraphicsApp::~GraphicsApp() {
@@ -31,7 +30,7 @@ GraphicsApp::~GraphicsApp() {
 }
 
 bool GraphicsApp::startup() {
-	
+
 	glEnable(GL_DEPTH_TEST);
 
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
@@ -44,13 +43,6 @@ bool GraphicsApp::startup() {
 	light.colour = { 1, 1, 1 };
 	light.direction = { 1, -1, 1 };
 	m_ambientLight = { .5f, .5f, .5f };
-	
-	// not being used
-	_position = { 0, 0, 0 };
-	_eulerAngles = { 0, 0, 0 };
-	_scale = { 1,1,1 };
-	_test = { 0, 0, 0, 0 }; // remove later
-
 
 	// create simple camera transforms
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
@@ -63,8 +55,6 @@ bool GraphicsApp::startup() {
 
 	m_scene->AddPointLights(glm::vec3(5, 3, 0), glm::vec3(1, 0, 0), 50);
 	m_scene->AddPointLights(glm::vec3(-5, 3, 0), glm::vec3(0, 0, 1), 50);
-
-	// m_solarSystem = new SolarSystem();
 
 	m_basicMeshes.clear();
 	m_basicMeshTransforms.clear();
@@ -87,17 +77,17 @@ void GraphicsApp::update(float deltaTime)
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
-	
+
 	// draw a simple grid with gizmos
 	vec4 white(1);
 	vec4 black(0, 0, 0, 1);
 	for (int i = 0; i < 21; ++i) {
 		Gizmos::addLine(vec3(-10 + i, 0, 10),
-						vec3(-10 + i, 0, -10),
-						i == 10 ? white : black);
+			vec3(-10 + i, 0, -10),
+			i == 10 ? white : black);
 		Gizmos::addLine(vec3(10, 0, -10 + i),
-						vec3(-10, 0, -10 + i),
-						i == 10 ? white : black);
+			vec3(-10, 0, -10 + i),
+			i == 10 ? white : black);
 	}
 
 	// add a transform so that we can see the axis
@@ -106,9 +96,6 @@ void GraphicsApp::update(float deltaTime)
 	// Grab the time since the application started
 	float time = getTime();
 
-	// Rotate the light
-	/*m_light.direction = glm::normalize(
-		glm::vec3(glm::cos(time * 2), glm::sin(time * 2), 0));*/
 	m_ambientLight = { .25f, .25f, .25f };
 
 	if (m_solarSystem != nullptr)
@@ -121,32 +108,6 @@ void GraphicsApp::update(float deltaTime)
 	m_particleEmitter->Update(deltaTime, m_camera->GetTransform(m_camera->GetPosition(), glm::vec3(0), glm::vec3(1)));
 
 	aie::Input* input = aie::Input::getInstance();
-
-	/*if (input->isKeyDown(aie::INPUT_KEY_1) && !input->isKeyUp(aie::INPUT_KEY_1))
-		m_camera.setPosition(m_camera.GetPosition() + glm::vec3(.01f, .01f, .01f));
-	if (input->isKeyDown(aie::INPUT_KEY_2) && !input->isKeyUp(aie::INPUT_KEY_2))
-		m_camera.setRotation(m_camera.GetRotation() + glm::vec3(.01f, .01f, .01f));
-	if (input->isKeyDown(aie::INPUT_KEY_3) && !input->isKeyUp(aie::INPUT_KEY_3))
-		m_camera.setScale(m_camera.GetScale() + glm::vec3(.01f, .01f, .01f));*/
-
-#pragma region RotateBunny
-	// rotaters the bunny transform
-	if (input->isKeyDown(aie::INPUT_KEY_UP))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'x', 0.1f);
-	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'x', -0.1f);
-	
-	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'y', 0.1f);
-	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'y', -0.1f);
-	
-	if (input->isKeyDown(aie::INPUT_KEY_COMMA))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'z', -0.1f);
-	if (input->isKeyDown(aie::INPUT_KEY_PERIOD))
-		m_bunnyTransform = RotateMesh(m_bunnyTransform, 'z', 0.1f);
-
-#pragma endregion
 
 	// quit if we press escape
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
@@ -168,8 +129,6 @@ void GraphicsApp::update(float deltaTime)
 
 	int i = 0;
 
-	//std::list<Instance*> instances = m_scene->GetInstances();
-	//for (auto iter = instances.begin(); iter != instances.end(); iter++)
 	for (auto iter = m_scene->GetInstances().begin(); iter != m_scene->GetInstances().end(); iter++)
 	{
 		// instance id
@@ -180,27 +139,19 @@ void GraphicsApp::update(float deltaTime)
 
 		ImGui::BeginGroup();
 		ImGui::CollapsingHeader(("Object Transform " + id).c_str());
-		
+
 		glm::vec3 pos = obj->GetPosition();
 		ImGui::DragFloat3(("Position " + id).c_str(), &pos.x, 0.1f, -100.0f, 100.0f);
 
-		// matrices are ment to use quaternions, glm only lets you pass in radians,
-		// and only lets you take out quaternions, this creates issues, use vec3 for rotation instead
 		glm::vec3 rot = obj->GetRotation();
-		ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f); // // gimble lock on y
-		
+		ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f);
+
 		glm::vec3 scale = obj->GetScale();
 		ImGui::DragFloat3(("Scale " + id).c_str(), &scale.x, 0.1f, -10.0f, 10.0f);
 
-		// testing custom conversion script // remove later
-		//_test = glm::eulerAngles_to_quat(obj->GetRotation());
-		//ImGui::DragFloat4(("Quat Test" + id).c_str(), &_test.x, 0.01f, -1.0f, 1.0f);
-		//rot = glm::quat_to_eulerAngles(_test);
-
 		// adds changes to the transform of the object
-		obj->SetTransform(obj->MakeTransform(pos, glm::vec3(0), scale));
-		obj->SetRotation(rot);
-		
+		obj->SetTransform(obj->MakeTransform(pos, rot, scale));
+
 		ImGui::EndGroup();
 	}
 
@@ -235,7 +186,7 @@ void GraphicsApp::draw()
 	DrawOurParticles(pvm);
 
 #pragma region Simple Shader on Basic Meshes
-	
+
 	m_shader.bind();
 
 	for (int i = 0; i < m_basicMeshTransforms.size(); i++)
@@ -252,9 +203,6 @@ void GraphicsApp::draw()
 #pragma region View Quad
 
 	// Unbind the target to return it to the back buffer
-	//m_renderTarget.unbind();
-	//clearScreen();
-
 	m_textureShader.bind();
 
 	m_modelTransform = m_quadTransform;
@@ -263,7 +211,7 @@ void GraphicsApp::draw()
 	m_textureShader.bindUniform("ProjectionViewModel", pvm);
 	m_textureShader.bindUniform("diffuseTexture", 0);
 
-	//m_renderTarget.getTarget(0).bind(0);
+	m_renderTarget.getTarget(0).bind(0);
 
 	m_gridTexture.bind(0);
 	m_quadMesh.Draw();
@@ -272,14 +220,17 @@ void GraphicsApp::draw()
 #pragma region Phong Shader
 
 	m_phongShader.bind();
+
+	m_modelTransform = m_bunnyTransform;
+
 	m_phongShader.bindUniform("LightDirection", m_scene->GetGlobalLight().direction);
 	m_phongShader.bindUniform("AmbientColour", m_scene->GetAmbientLight());
 	m_phongShader.bindUniform("LightColour", m_scene->GetGlobalLight().colour);
 	m_phongShader.bindUniform("CameraPosition", m_camera->GetPosition());
 
-	pvm = projectionMatrix * viewMatrix * m_bunnyTransform;
+	pvm = projectionMatrix * viewMatrix * m_modelTransform;
 	m_phongShader.bindUniform("ProjectionViewModel", pvm);
-	m_phongShader.bindUniform("ModelMatrix", m_bunnyTransform);
+	m_phongShader.bindUniform("ModelMatrix", m_modelTransform);
 
 	m_marbleTexture.bind(0);
 	m_phongShader.bindUniform("seamlessTexture", 0);
@@ -289,8 +240,6 @@ void GraphicsApp::draw()
 
 	m_rampTexture.bind(2);
 	m_phongShader.bindUniform("rampTexture", 2);
-
-	m_bunnyMesh.draw();
 
 #pragma endregion
 
@@ -334,7 +283,7 @@ glm::mat4 GraphicsApp::RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radia
 
 	glm::mat4 tempMat;
 
-	if(std::tolower(a_axis) == 'x')
+	if (std::tolower(a_axis) == 'x')
 	{
 		tempMat = {
 		1,   0,	  0,	0,
@@ -461,7 +410,7 @@ bool GraphicsApp::LaunchShaders()
 		 0,	 0, 10,	0,
 		 0,	 0,  0,	1
 	};
-	
+
 #pragma endregion
 #pragma region Bunny Mesh
 
@@ -475,7 +424,7 @@ bool GraphicsApp::LaunchShaders()
 		   0, 0.1f,	   0,	0,
 		   0,	 0, 0.1f,	0,
 		  -4,	 0,    4,	1
-	}; // this is 10 units large
+	};
 
 #pragma endregion
 #pragma region Spear Mesh
@@ -516,17 +465,16 @@ bool GraphicsApp::LaunchShaders()
 	// create the fullscreen quad for post processing effects
 	m_screenQuad.InitialiseFullscreenQuad();
 
-	// can only have one :(
-	//LoadQuadMesh();
-	//LoadBoxMesh();
-	//LoadPyramidMesh();
-	//LoadGridMesh();
-
 	// creating instances of spear
 	for (int i = 0; i < 10; i++)
 		m_scene->AddInstance(new Instance(glm::vec3(i * 2, 0, 0), glm::vec3(0, i * 30, 0), glm::vec3(1, 1, 1), &m_spearMesh, &m_normalMapShader));
+
 	// creating instance of potion bottle
 	m_scene->AddInstance(new Instance(m_potionTransform, &m_potionMesh, &m_normalMapShader));
+	m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
+
+	m_scene->AddInstance(new Instance(m_bunnyTransform, &m_bunnyMesh, &m_normalMapShader));
+	m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
 
 	return true;
 }
@@ -539,9 +487,9 @@ void GraphicsApp::LoadQuadMesh()
 	// create vertices for quad mesh
 	Mesh::Vertex vertices[numVertices];
 	vertices[0].position = { -0.5f,  0,  0.5, 1 }; // bottom left
-	vertices[1].position = {  0.5f,  0,  0.5, 1 }; // bottom front
+	vertices[1].position = { 0.5f,  0,  0.5, 1 }; // bottom front
 	vertices[2].position = { -0.5f,  0, -0.5, 1 }; // bottom back
-	vertices[3].position = {  0.5f,  0, -0.5, 1 }; // bottom right
+	vertices[3].position = { 0.5f,  0, -0.5, 1 }; // bottom right
 
 	// form tris
 	unsigned int indices[numIndices] = { 0, 1, 2, 2, 1, 3 };
@@ -567,14 +515,14 @@ void GraphicsApp::LoadBoxMesh()
 
 	Mesh::Vertex vertices[numVertices];
 	vertices[0].position = { -0.5f, -0.5,  0.5, 1 }; // bottom left
-	vertices[1].position = {  0.5f, -0.5,  0.5, 1 }; // bottom front
+	vertices[1].position = { 0.5f, -0.5,  0.5, 1 }; // bottom front
 	vertices[2].position = { -0.5f, -0.5, -0.5, 1 }; // bottom back
-	vertices[3].position = {  0.5f, -0.5, -0.5, 1 }; // bottom right
+	vertices[3].position = { 0.5f, -0.5, -0.5, 1 }; // bottom right
 
 	vertices[4].position = { -0.5f,  0.5,  0.5, 1 }; // top left
-	vertices[5].position = {  0.5f,  0.5,  0.5, 1 }; // top front
+	vertices[5].position = { 0.5f,  0.5,  0.5, 1 }; // top front
 	vertices[6].position = { -0.5f,  0.5, -0.5, 1 }; // top back
-	vertices[7].position = {  0.5f,  0.5, -0.5, 1 }; // top right
+	vertices[7].position = { 0.5f,  0.5, -0.5, 1 }; // top right
 
 	unsigned int indices[numIndices] = {
 		3, 1, 2, 2, 1, 0, // bottom face
@@ -604,10 +552,10 @@ void GraphicsApp::LoadPyramidMesh()
 
 	Mesh::Vertex vertices[numVertices];
 	vertices[0].position = { -0.5f, -0.5,  0.5, 1 }; // bottom left
-	vertices[1].position = {  0.5f, -0.5,  0.5, 1 }; // bottom front
+	vertices[1].position = { 0.5f, -0.5,  0.5, 1 }; // bottom front
 	vertices[2].position = { -0.5f, -0.5, -0.5, 1 }; // bottom back
-	vertices[3].position = {  0.5f, -0.5, -0.5, 1 }; // bottom right
-	vertices[4].position = {     0,  0.5,    0, 1 }; // top
+	vertices[3].position = { 0.5f, -0.5, -0.5, 1 }; // bottom right
+	vertices[4].position = { 0,  0.5,    0, 1 }; // top
 
 	unsigned int indices[numIndices] = {
 		3, 1, 2, 2, 1, 0, // bottom face
@@ -643,12 +591,12 @@ void GraphicsApp::LoadGridMesh()
 	{
 		float posOffset = 0.0f;
 
-		vertices[i * 4].position     = { -0.5f,	.01,	  0.5f - posOffset, 1 }; // bottom left
-		vertices[i * 4 + 1].position = {  0.5f,	.01,      0.5f - posOffset, 1 }; // bottom front
+		vertices[i * 4].position = { -0.5f,	.01,	  0.5f - posOffset, 1 }; // bottom left
+		vertices[i * 4 + 1].position = { 0.5f,	.01,      0.5f - posOffset, 1 }; // bottom front
 		vertices[i * 4 + 2].position = { -0.5f, .01,    0.498f - posOffset, 1 }; // bottom back
-		vertices[i * 4 + 3].position = {  0.5f,	.01,	0.498f - posOffset, 1 }; // bottom right
+		vertices[i * 4 + 3].position = { 0.5f,	.01,	0.498f - posOffset, 1 }; // bottom right
 
-		indices[indicesCount]     =     i * 4;
+		indices[indicesCount] = i * 4;
 		indices[indicesCount + 1] = i * 4 + 1;
 		indices[indicesCount + 2] = i * 4 + 2;
 
@@ -664,19 +612,19 @@ void GraphicsApp::LoadGridMesh()
 	{
 		float posOffset = 0.0f;
 
-		vertices[(numVertices / 2) + i * 4].position     = {   0.5f - posOffset,  .01,  -0.5f, 1 }; // bottom left
-		vertices[(numVertices / 2) + i * 4 + 1].position = {   0.5f - posOffset,  .01,   0.5f, 1 }; // bottom front
+		vertices[(numVertices / 2) + i * 4].position = { 0.5f - posOffset,  .01,  -0.5f, 1 }; // bottom left
+		vertices[(numVertices / 2) + i * 4 + 1].position = { 0.5f - posOffset,  .01,   0.5f, 1 }; // bottom front
 		vertices[(numVertices / 2) + i * 4 + 2].position = { 0.498f - posOffset,  .01,  -0.5f, 1 }; // bottom back
 		vertices[(numVertices / 2) + i * 4 + 3].position = { 0.498f - posOffset,  .01,   0.5f, 1 }; // bottom right
-	
+
 		indices[indicesCount] = i * 4 + (numVertices / 2);
 		indices[indicesCount + 1] = i * 4 + 1 + (numVertices / 2);
 		indices[indicesCount + 2] = i * 4 + 2 + (numVertices / 2);
-	
+
 		indices[indicesCount + 3] = i * 4 + 2 + (numVertices / 2);
 		indices[indicesCount + 4] = i * 4 + 1 + (numVertices / 2);
 		indices[indicesCount + 5] = i * 4 + 3 + (numVertices / 2);
-	
+
 		indicesCount += 6;
 		posOffset += 0.1f;
 	}
