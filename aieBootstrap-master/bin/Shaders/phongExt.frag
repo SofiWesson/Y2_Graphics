@@ -54,15 +54,5 @@ void main()
     rim = rim * rim * rim;
     float alpha = rim + specular.r;
 
-    // saturate the colour // saturate properly
-    vec3 saturate = ambient + diffuse + specular + rim + intensity;
-    saturate = clamp(saturate, vec3(0, 0, 0), vec3(1, 1, 1));
-
-    vec4 fragColour = vec4(saturate, alpha) + texture(rampTexture, vec2(lambertTerm, 0.03f));
-    fragColour = clamp(fragColour, vec4(0, 0, 0, 0), vec4(1, 1, 1, 1));
-
-    FragColour = fragColour;
-    //FragColour = vec4(diffuse + specular, 1);
-    //FragColour = vec4(intensity * vec3(1, 1, 1) * sampleTP.xyz, 1);
-    //FragColour = texture(rampTexture, vec2(lambertTerm, 0.03f));
+    FragColour = vec4(ambient + diffuse + specular + rim + intensity, alpha) + texture(rampTexture, vec2(lambertTerm, 0.03f));
 }

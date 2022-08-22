@@ -124,7 +124,6 @@ void GraphicsApp::update(float deltaTime)
 #pragma region ImGUI Local Transform
 
 	// Manipulate the transform of all Instanced objects
-
 	ImGui::Begin("Debug");
 
 	int i = 0;
@@ -154,6 +153,28 @@ void GraphicsApp::update(float deltaTime)
 
 		ImGui::EndGroup();
 	}
+
+	i++;
+	std::string id = std::to_string(i);
+
+	Instance* bunny = new Instance(m_bunnyTransform, &m_bunnyMesh, &m_normalMapShader);
+
+	ImGui::BeginGroup();
+	ImGui::CollapsingHeader(("Object Transform " + id).c_str());
+
+	glm::vec3 pos = bunny->GetPosition();
+	ImGui::DragFloat3(("Position " + id).c_str(), &pos.x, 0.1f, -100.0f, 100.0f);
+
+	glm::vec3 rot = bunny->GetRotation();
+	ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f);
+
+	glm::vec3 scale = bunny->GetScale();
+	ImGui::DragFloat3(("Scale " + id).c_str(), &scale.x, 0.1f, -10.0f, 10.0f);
+
+	// adds changes to the transform of the object
+	m_bunnyTransform = bunny->MakeTransform(pos, rot, scale); // doesnt work
+
+	ImGui::EndGroup();
 
 	ImGui::End();
 
@@ -275,47 +296,6 @@ void GraphicsApp::draw()
 	m_screenQuad.Draw();
 
 #pragma endregion
-}
-
-glm::mat4 GraphicsApp::RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radian)
-{
-	// old rotation function, not used anymore
-	float cos = glm::cos(a_radian);
-	float sin = glm::sin(a_radian);
-
-	glm::mat4 tempMat;
-
-	if (std::tolower(a_axis) == 'x')
-	{
-		tempMat = {
-		1,   0,	  0,	0,
-		0, cos, -sin,	0,
-		0, sin,  cos,	0,
-		0,	 0,    0,	1
-		};
-	}
-
-	if (std::tolower(a_axis) == 'y')
-	{
-		tempMat = {
-		cos,	0,	sin,	0,
-		  0,	1,	  0,	0,
-		-sin,	0,  cos,	0,
-		  0,	0,    0,	1
-		};
-	}
-
-	if (std::tolower(a_axis) == 'z')
-	{
-		tempMat = {
-		cos, -sin,	0,	0,
-		sin,  cos,	0,	0,
-		0,	    0,	1,	0,
-		0,		0,	0,	1
-		};
-	}
-
-	return a_matrix * tempMat;
 }
 
 bool GraphicsApp::LaunchShaders()
@@ -474,9 +454,6 @@ bool GraphicsApp::LaunchShaders()
 	// creating instance of potion bottle
 	m_scene->AddInstance(new Instance(m_potionTransform, &m_potionMesh, &m_normalMapShader));
 	m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
-
-	//m_scene->AddInstance(new Instance(m_bunnyTransform, &m_bunnyMesh, &m_normalMapShader));
-	//m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
 
 	return true;
 }
