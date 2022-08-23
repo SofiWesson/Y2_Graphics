@@ -2,9 +2,6 @@
 
 #include "GraphicsApp.h"
 #include "Camera.h"
-#include "SolarSystem.h"
-#include "Planet.h"
-
 #include "Gizmos.h"
 #include "Input.h"
 #include <glm/glm.hpp>
@@ -98,9 +95,6 @@ void GraphicsApp::update(float deltaTime)
 
 	m_ambientLight = { .25f, .25f, .25f };
 
-	if (m_solarSystem != nullptr)
-		m_solarSystem->Update(deltaTime);
-
 	m_camera->update(deltaTime);
 
 	glm::vec2 windowSize((float)getWindowWidth(), (float)getWindowHeight());
@@ -154,27 +148,7 @@ void GraphicsApp::update(float deltaTime)
 		ImGui::EndGroup();
 	}
 
-	i++;
-	std::string id = std::to_string(i);
-
-	Instance* bunny = new Instance(m_bunnyTransform, &m_bunnyMesh, &m_normalMapShader);
-
-	ImGui::BeginGroup();
-	ImGui::CollapsingHeader(("Object Transform " + id).c_str());
-
-	glm::vec3 pos = bunny->GetPosition();
-	ImGui::DragFloat3(("Position " + id).c_str(), &pos.x, 0.1f, -100.0f, 100.0f);
-
-	glm::vec3 rot = bunny->GetRotation();
-	ImGui::DragFloat3(("Rotation " + id).c_str(), &rot.x, 0.1f, -360.0f, 360.0f);
-
-	glm::vec3 scale = bunny->GetScale();
-	ImGui::DragFloat3(("Scale " + id).c_str(), &scale.x, 0.1f, -10.0f, 10.0f);
-
-	// adds changes to the transform of the object
-	m_bunnyTransform = bunny->MakeTransform(pos, rot, scale); // doesnt work
-
-	ImGui::EndGroup();
+	m_bunnyTransform = m_scene->GetInstances().back()->GetTransform();
 
 	ImGui::End();
 
@@ -195,9 +169,6 @@ void GraphicsApp::draw()
 	glm::mat4 projectionMatrix = m_camera->getProjection((float)getWindowWidth(), (float)getWindowHeight());
 	glm::mat4 viewMatrix = m_camera->getView();
 	auto pvm = projectionMatrix * viewMatrix * glm::mat4(1);
-
-	if (m_solarSystem != nullptr)
-		m_solarSystem->Draw(projectionMatrix * viewMatrix);
 
 	m_scene->Draw();
 
@@ -394,6 +365,21 @@ bool GraphicsApp::LaunchShaders()
 	};
 
 #pragma endregion
+#pragma region Empty Mesh
+
+	if (m_emptyMesh.load("./Empty/Empty.obj") == false)
+	{
+		printf("Empty mesh error!\n");
+		return false;
+	}
+	m_bunnyTransform = {
+		1,   0,   0,   0,
+		0,   1,	  0,   0,
+		0,	 0,   1,   0,
+		0,	 0,   0,   1
+	};
+
+#pragma endregion
 #pragma region Bunny Mesh
 
 	if (m_bunnyMesh.load("./stanford/Bunny.obj") == false)
@@ -453,6 +439,11 @@ bool GraphicsApp::LaunchShaders()
 
 	// creating instance of potion bottle
 	m_scene->AddInstance(new Instance(m_potionTransform, &m_potionMesh, &m_normalMapShader));
+	m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
+
+	// creating instance of empty
+	m_emptyTransform = m_bunnyTransform;
+	m_scene->AddInstance(new Instance(m_emptyTransform, &m_emptyMesh, &m_normalMapShader));
 	m_scene->GetInstances().back()->SetRotation(glm::vec3(0));
 
 	return true;

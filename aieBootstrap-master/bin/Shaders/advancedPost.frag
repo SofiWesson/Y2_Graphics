@@ -172,28 +172,6 @@ vec4 Posterization(vec2 texCoord)
 
 vec4 DistanceFog(vec2 texCoord)
 {
-    // float fogMaxDist = 5.0f;
-    // float fogMinDist = 0.0f;
-    // float density = 2.0f;
-    // vec4 fogColour = vec4(0.8f, 0.8f, 0.8f, 1.0f);
-    // 
-    // vec2 mid = vec2(0.5f);
-    // float distanceFromCentre = distance(texCoord, mid);
-
-    // //vec3 objPosition = vec3(transform[0][3], transform[1][3], transform[2][3]);
-
-    // float dist = distance(vec3(distanceFromCentre, distanceFromCentre, 0.0f), vec3(distanceFromCentre, distanceFromCentre,density));
-
-    // float fogFactor = (fogMaxDist - dist) / (fogMaxDist - fogMinDist);
-    // fogFactor = clamp(fogFactor, 0.0f, 1.0f);
-
-    // vec4 colour = texture(colourTarget, texCoord);
-    // vec4 outputColour = mix(fogColour, colour, fogFactor);
-    // 
-    // return outputColour;
-
-    // https://learnopengl.com/Advanced-OpenGL/Depth-testing
-
     float near = 0.1;
     float far = 100.0;
 

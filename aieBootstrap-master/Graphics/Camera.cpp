@@ -123,7 +123,7 @@ void Camera::setRotation(glm::vec3 a_rotation)
 	float cosX = cos(glm::radians(a_rotation.x));
 	float sinX = sin(glm::radians(a_rotation.x));
 
-	m_localTransform[1].y = cosX - GetScale().y; // good
+	m_localTransform[1].y = cosX - GetScale().y;
 	m_localTransform[1].z = -sinX;
 	m_localTransform[2].y = sinX;
 	m_localTransform[2].z = cosX + GetScale().z;
@@ -237,9 +237,6 @@ glm::vec3 Camera::GetRotation()
 		q.y = (tempMat[1].z + tempMat[2].y) / s;
 		q.z = .25f * s;
 	}
-
-	// quaternion to angle
-	// confusing leave for later
 
 	return m_rotation;
 }

@@ -78,4 +78,4 @@ private:
 	std::vector<Material>	m_materials;
 };
 
-} // namespace aie
+}

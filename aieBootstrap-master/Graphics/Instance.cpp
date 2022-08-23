@@ -16,7 +16,7 @@ Instance::Instance(glm::vec3 a_position, glm::vec3 a_eulerAngles, glm::vec3 a_sc
     m_mesh(a_mesh), m_shader(a_shader)
 {
     m_rotation = a_eulerAngles;
-    m_transform = MakeTransform(a_position, glm::vec3(0), a_scale);
+    m_transform = MakeTransform(a_position, a_eulerAngles, a_scale);
 }
 
 void Instance::Draw(Scene* a_scene)
@@ -48,8 +48,6 @@ void Instance::Draw(Scene* a_scene)
 glm::mat4 Instance::MakeTransform(glm::vec3 a_position, glm::vec3 a_eulerAngles, glm::vec3 a_scale)
 {
     m_rotation = a_eulerAngles;
-
-    glm::vec3 rot = glm::vec3(0);
 
     // add position, rotation, and scale into a single matrix
     return glm::translate(glm::mat4(1), a_position)

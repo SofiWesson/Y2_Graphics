@@ -2,8 +2,6 @@
 
 #include "Application.h"
 #include "Camera.h"
-#include "SolarSystem.h"
-#include "Planet.h"
 #include "Shader.h"
 #include "Mesh.h"
 #include "OBJMesh.h"
@@ -50,8 +48,6 @@ public:
 
 	virtual void update(float deltaTime);
 	virtual void draw();
-
-	glm::mat4 RotateMesh(glm::mat4 a_matrix, char a_axis, float a_radian);
 
 	glm::vec2 m_windowSizeLastFrame = glm::vec2(0.f, 0.f);
 
@@ -101,6 +97,10 @@ protected:
 	Mesh m_gridMesh;
 	glm::mat4 m_gridTransform;
 
+	// Empty mesh data
+	aie::OBJMesh m_emptyMesh;
+	glm::mat4 m_emptyTransform;
+
 	// Stanford bunny data
 	aie::OBJMesh m_bunnyMesh;
 	glm::mat4 m_bunnyTransform;
@@ -140,5 +140,5 @@ protected:
 
 	float m_dt = 0.f;
 
-	Instance* m_instancePotion;
+	Instance* m_empty;
 };
