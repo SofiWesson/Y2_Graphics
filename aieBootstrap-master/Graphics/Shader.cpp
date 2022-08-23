@@ -138,6 +138,7 @@ int ShaderProgram::getUniform(const char* name) {
 	return glGetUniformLocation(m_program, name);
 }
 
+// bind uniforms
 bool ShaderProgram::bindUniform(const char* name, int value) {
 	assert(m_program > 0 && "Invalid shader program");
 	int i = glGetUniformLocation(m_program, name);

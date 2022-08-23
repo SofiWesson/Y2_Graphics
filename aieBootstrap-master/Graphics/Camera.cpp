@@ -120,6 +120,7 @@ void Camera::setRotation(glm::vec3 a_rotation)
 {
 #pragma region X Rotation
 
+	// x rotation
 	float cosX = cos(glm::radians(a_rotation.x));
 	float sinX = sin(glm::radians(a_rotation.x));
 
@@ -131,6 +132,7 @@ void Camera::setRotation(glm::vec3 a_rotation)
 #pragma endregion
 #pragma region Y Rotation
 
+	// y rotation
 	float cosY = cos(glm::radians(a_rotation.y));
 	float sinY = sin(glm::radians(a_rotation.y));
 
@@ -142,6 +144,7 @@ void Camera::setRotation(glm::vec3 a_rotation)
 #pragma endregion
 #pragma region Z Rotation
 
+	// z rotation
 	float cosZ = cos(glm::radians(a_rotation.z));
 	float sinZ = sin(glm::radians(a_rotation.z));
 

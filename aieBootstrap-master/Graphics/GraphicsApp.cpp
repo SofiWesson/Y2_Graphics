@@ -99,6 +99,7 @@ void GraphicsApp::update(float deltaTime)
 
 	glm::vec2 windowSize((float)getWindowWidth(), (float)getWindowHeight());
 
+	// update particles
 	m_particleEmitter->Update(deltaTime, m_camera->GetTransform(m_camera->GetPosition(), glm::vec3(0), glm::vec3(1)));
 
 	aie::Input* input = aie::Input::getInstance();
@@ -122,6 +123,7 @@ void GraphicsApp::update(float deltaTime)
 
 	int i = 0;
 
+	// loop through Instances to create and update GUI for them
 	for (auto iter = m_scene->GetInstances().begin(); iter != m_scene->GetInstances().end(); iter++)
 	{
 		// instance id
@@ -148,6 +150,7 @@ void GraphicsApp::update(float deltaTime)
 		ImGui::EndGroup();
 	}
 
+	// bind the bunny's transform to the empty objects transform so it can be interacted with using the GUI and still have its shader
 	m_bunnyTransform = m_scene->GetInstances().back()->GetTransform();
 
 	ImGui::End();
@@ -215,6 +218,7 @@ void GraphicsApp::draw()
 
 	m_modelTransform = m_bunnyTransform;
 
+	// lighting
 	m_phongShader.bindUniform("LightDirection", m_scene->GetGlobalLight().direction);
 	m_phongShader.bindUniform("AmbientColour", m_scene->GetAmbientLight());
 	m_phongShader.bindUniform("LightColour", m_scene->GetGlobalLight().colour);
@@ -224,6 +228,7 @@ void GraphicsApp::draw()
 	m_phongShader.bindUniform("ProjectionViewModel", pvm);
 	m_phongShader.bindUniform("ModelMatrix", m_modelTransform);
 
+	// textures
 	m_marbleTexture.bind(0);
 	m_phongShader.bindUniform("seamlessTexture", 0);
 
@@ -362,7 +367,7 @@ bool GraphicsApp::LaunchShaders()
 		 0, 10,	0,	0,
 		 0,	 0, 10,	0,
 		 0,	 0,  0,	1
-	};
+	}; // this is 10 units large
 
 #pragma endregion
 #pragma region Empty Mesh
@@ -407,7 +412,7 @@ bool GraphicsApp::LaunchShaders()
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1
-	}; // this is 10 units large
+	};
 
 #pragma endregion
 #pragma region Potion Mesh
@@ -426,6 +431,7 @@ bool GraphicsApp::LaunchShaders()
 
 #pragma endregion
 
+	// load textures for phong shader
 	m_marbleTexture.load("./textures/marble2.jpg");
 	m_hatchingTexture.load("./textures/ramp01.png");
 	m_rampTexture.load("./textures/ramps.png", true);

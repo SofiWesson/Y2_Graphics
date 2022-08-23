@@ -4,10 +4,6 @@
 Scene::Scene(Camera* a_camera, glm::vec2 a_windowSize, Light& a_light, glm::vec3 a_ambientLight) :
 	m_camera(a_camera), m_windowSize(a_windowSize), m_globalDirLight(a_light), m_ambientLight(a_ambientLight)
 {
-	m_camera = a_camera;
-	m_windowSize = a_windowSize;
-	m_globalDirLight = a_light;
-	m_ambientLight = a_ambientLight;
 }
 
 Scene::~Scene()
@@ -25,12 +21,14 @@ void Scene::AddInstance(Instance* a_instance)
 
 void Scene::Draw()
 {
+	// loops through and draw all lights
 	for (int i = 0; i < MAX_LIGHTS && i < GetNumLights(); i++)
 	{
 		m_pointLightPositions[i] = m_pointLights[i].direction;
 		m_pointLightColours[i] = m_pointLights[i].colour;
 	}
 
+	// loop through and draw all instances
 	for (auto it = m_instances.begin(); it != m_instances.end(); it++)
 	{
 		Instance* instance = *it;

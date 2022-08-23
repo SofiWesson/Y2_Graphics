@@ -50,11 +50,12 @@ protected:
 	Camera* m_camera;
 	glm::vec2 m_windowSize;
 
+	std::list<Instance*> m_instances;
+
+	// lights
 	Light m_globalDirLight;
 	glm::vec3 m_ambientLight;
 	std::vector<Light> m_pointLights;
-	std::list<Instance*> m_instances;
-
 	glm::vec3 m_pointLightPositions[MAX_LIGHTS];
 	glm::vec3 m_pointLightColours[MAX_LIGHTS];
 };

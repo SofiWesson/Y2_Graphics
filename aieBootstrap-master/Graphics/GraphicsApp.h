@@ -21,6 +21,7 @@ class SolarSystem;
 class Planet;
 class Scene;
 
+// exchangable shaders
 enum class PostProcessEffects
 {
 	DEFAULT = 0,
@@ -119,8 +120,6 @@ protected:
 
 	Camera* m_camera = nullptr;
 	FlyCamera m_flyCamera;
-
-	SolarSystem* m_solarSystem = nullptr;
 
 	glm::vec3 m_ambientLight;
 

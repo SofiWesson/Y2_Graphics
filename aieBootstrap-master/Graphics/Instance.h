@@ -41,7 +41,7 @@ public:
 		m_rotation = a_eulerAngles;
 	}
 
-	glm::vec3 GetScale() {
+	glm::vec3 GetScale() { // extracts scale in a vector 3 from a matrix 4
 		return glm::vec3(
 			glm::length(glm::vec3(m_transform[0][0], m_transform[0][1], m_transform[0][2])),
 			glm::length(glm::vec3(m_transform[1][0], m_transform[1][1], m_transform[1][2])),
