@@ -44,6 +44,7 @@ void main()
 
     vec4 hatching = texture(hatchingTexture, gl_FragCoord.xy / 5);
     intensity = step(hatching.x, intensity);
+    intensity = intensity / 4;
 
     // Calculate the diffuse, ambient, ambient and specular colour of the model
     vec3 ambient = AmbientColour * Ka;

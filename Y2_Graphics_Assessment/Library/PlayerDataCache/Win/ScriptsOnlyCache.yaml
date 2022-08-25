@@ -1,5 +1,7 @@
 ScriptsOnlyBuild:
   usedScripts:
+    Assembly-CSharp-Editor.dll:
+    - ReadmeEditor
     Assembly-CSharp.dll:
     - ActionList
     - ActionListUI
@@ -11,6 +13,7 @@ ScriptsOnlyBuild:
     - Pause
     - Player
     - PlayerControlsTPS
+    - Readme
     - ToggleActive
     - ToggleButtonUse
     - ToggleParticleAction
@@ -1809,4 +1812,4 @@ ScriptsOnlyBuild:
   platform: 5
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: D:/AIE/_ToSubmit/Graphics/Build/Y2_Graphics_Assessment.exe
+  playerPath: D:/AIE/_ToSubmit/Graphics/Y2_Graphics_Assessment.exe

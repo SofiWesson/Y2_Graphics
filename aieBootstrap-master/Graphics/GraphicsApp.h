@@ -17,8 +17,6 @@
 class Application;
 class Camera;
 class FlyCamera;
-class SolarSystem;
-class Planet;
 class Scene;
 
 // exchangable shaders
