@@ -18,6 +18,7 @@ public class Pause : MonoBehaviour
         }
     }
 
+    // pauses the game
     public void PauseFunc()
     {
         foreach (Canvas c in canvasesToToggle)

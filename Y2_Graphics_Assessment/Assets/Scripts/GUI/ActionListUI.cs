@@ -14,7 +14,6 @@ public class ActionListUI : MonoBehaviour
         foreach (BasicAction a in actionList.actions)
         {
             // make this a child of ours in creation. don't worry about specifying a positon as the LayoutGroup handles that
-
             ActionUI ui = Instantiate(prefab, transform);
             ui.SetAction(a);
             ui.Init(player);
