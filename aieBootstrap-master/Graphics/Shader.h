@@ -20,7 +20,7 @@ enum eShaderStage : unsigned int {
 	GEOMETRY,
 	FRAGMENT,
 
-	SHADER_STAGE_Count,
+	SHADER_STAGE_Count
 };
 
 // individual sharable shader stages
