@@ -111,8 +111,32 @@ void GraphicsApp::update(float deltaTime)
 #pragma region ImGUI Light Settings
 	// ImGui light controls
 	ImGui::Begin("Light Settings");
+
+	ImGui::BeginGroup();
+	ImGui::CollapsingHeader("Global Light");
 	ImGui::DragFloat3("Global Light Direction", &m_scene->GetGlobalLight().direction[0], 0.1f, -1.0f, 1.0f);
 	ImGui::DragFloat3("Global Light Colour", &m_scene->GetGlobalLight().colour[0], 0.1f, 0.0f, 2.0f);
+	ImGui::EndGroup();
+
+	int i = 0;
+
+	for (auto iter = m_scene->GetPointLights().begin(); iter != m_scene->GetPointLights().end(); iter++)
+	{
+		// instance id
+		i++;
+		std::string id = std::to_string(i);
+
+		Light& obj = *iter;
+
+		ImGui::BeginGroup();
+		ImGui::CollapsingHeader(("Point Light Controls " + id).c_str());
+
+		ImGui::DragFloat3(("Position " + id).c_str(), &obj.direction[0], 0.1f, -100.0f, 100.0f);
+		ImGui::DragFloat3(("Colour " + id).c_str(), &obj.colour[0], 0.1f, 0.0f, 100.0f);
+
+		ImGui::EndGroup();
+	}
+
 	ImGui::End();
 
 #pragma endregion
@@ -121,7 +145,7 @@ void GraphicsApp::update(float deltaTime)
 	// Manipulate the transform of all Instanced objects
 	ImGui::Begin("Debug");
 
-	int i = 0;
+	i = 0;
 
 	// loop through Instances to create and update GUI for them
 	for (auto iter = m_scene->GetInstances().begin(); iter != m_scene->GetInstances().end(); iter++)
